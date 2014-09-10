@@ -6,27 +6,38 @@ using Newtonsoft.Json;
 using TagLib;
 using System.IO;
 
-namespace Dragon_Audio_Player_2._0
+namespace Dragon_Audio_Player
 {
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       10/4/2014                   |
-    //      |   Version:    0.1                         |
+    //      |   Date:       26/06/2014                  |
+    //      |   Version:    0.2                         |
     //      |   Copyright © Double Dutch Dragons 2014   |
     //      ---------------------------------------------
 
     public static class StaticClass
     {
+        private static string[] AUDIO_FILE_TYPES = {".mp3", ".wav", "aac", "flac", ".mp4", ".wma"};
+
         private class PlayListsList
         {
             public List<PlayList> Playlists;
+
             public PlayListsList()
             {
                 Playlists = new List<PlayList>();
             }
-
         }
+
+        public static bool EndsWithAudioFileType(string p_fileLocation)
+        {
+            foreach (string s in AUDIO_FILE_TYPES)
+                if (p_fileLocation.ToLower().EndsWith(s))
+                    return true;
+            return false;
+        }
+
         public static List<PlayList> JSONToPlaylistsList(string p_text)
         {
             try
@@ -47,6 +58,7 @@ namespace Dragon_Audio_Player_2._0
                 throw new Exception(ex.Message);
             }
         }
+
         public static string PlaylistsListToJSON(List<PlayList> p_lists)
         {
             try
@@ -62,6 +74,7 @@ namespace Dragon_Audio_Player_2._0
                 throw new Exception(ex.Message);
             }
         }
+
         public static PlayList FixPlaylist(PlayList p_pl)
         {
             try
@@ -90,6 +103,7 @@ namespace Dragon_Audio_Player_2._0
                 throw new Exception(ex.Message);
             }
         }
+
         public static string GetArtist(TagLib.File p_tag)
         {
             try
@@ -103,8 +117,13 @@ namespace Dragon_Audio_Player_2._0
                         m_artist = p_tag.Tag.JoinedAlbumArtists;
                         if (m_artist == null)
                         {
-                            try { m_artist = p_tag.Tag.AlbumArtists[0]; }
-                            catch { }
+                            try
+                            {
+                                m_artist = p_tag.Tag.AlbumArtists[0];
+                            }
+                            catch
+                            {
+                            }
                             if (m_artist == null)
                                 m_artist = "";
                         }
@@ -118,6 +137,7 @@ namespace Dragon_Audio_Player_2._0
                 throw ex;
             }
         }
+
         public static string GetTimeString(TimeSpan p_span)
         {
             string m_return = "";
@@ -129,6 +149,7 @@ namespace Dragon_Audio_Player_2._0
                 m_return = new DateTime(p_span.Ticks).ToString("mm:ss");
             return m_return;
         }
+
         public static void WriteToFile(string p_loc, string p_text)
         {
             if (!Directory.Exists(Path.GetDirectoryName(p_loc)))

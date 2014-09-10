@@ -1,6 +1,7 @@
-﻿namespace Dragon_Audio_Player_2._0
+﻿using System.Windows.Forms;
+namespace Dragon_Audio_Player 
 {
-    partial class Form1
+    partial class Form1 : Form
     {
         /// <summary>
         /// Required designer variable.
@@ -46,7 +47,14 @@
             this.miPlaylistNewCreate = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistSelect = new System.Windows.Forms.ToolStripMenuItem();
             this.cbxmiPlaylistSelect = new System.Windows.Forms.ToolStripComboBox();
+            this.miSelectedPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.miSelectPlaylistSync = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbxmiPlaylistSPSync = new System.Windows.Forms.ToolStripComboBox();
+            this.miPlaylistsSPAutoReset = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbxmiPlaylistSPAutoReset = new System.Windows.Forms.ToolStripComboBox();
+            this.miSelectedPlaylistResetTimesPlayed = new System.Windows.Forms.ToolStripMenuItem();
             this.miPreferences = new System.Windows.Forms.ToolStripDropDownButton();
+            this.playingModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbxmiPreferencesMode = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cbmiPreferencesWriteToFile = new System.Windows.Forms.ToolStripComboBox();
@@ -60,19 +68,25 @@
             this.miPrevious = new System.Windows.Forms.ToolStripButton();
             this.miNext = new System.Windows.Forms.ToolStripButton();
             this.dgridSongs = new System.Windows.Forms.DataGridView();
+            this.cxmsGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxmiPlaycount = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxmitbxPlaycount = new System.Windows.Forms.ToolStripTextBox();
+            this.ctxmibtnPlaycountOK = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxmibtnDeleteFromPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1s = new System.Windows.Forms.Timer(this.components);
             this.clmTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmAlbum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmYear = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmTimesPlayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmTimesPlayed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timer1s = new System.Windows.Forms.Timer(this.components);
             this.pnlPlaying.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarPlaying)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarVolume)).BeginInit();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgridSongs)).BeginInit();
+            this.cxmsGrid.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlPlaying
@@ -162,14 +176,17 @@
             // miFileAddFolder
             // 
             this.miFileAddFolder.Name = "miFileAddFolder";
-            this.miFileAddFolder.Size = new System.Drawing.Size(134, 22);
-            this.miFileAddFolder.Text = "Add Folder";
+            this.miFileAddFolder.Size = new System.Drawing.Size(147, 22);
+            this.miFileAddFolder.Text = "Add Directory";
+            this.miFileAddFolder.ToolTipText = "Setting Sync to \"Yes\" means you won\'t have to add songs manually anywhere. You ca" +
+    "n just place them in the  selected directory and they will be added automaticall" +
+    "y.";
             this.miFileAddFolder.Click += new System.EventHandler(this.miFileAddFolder_Click);
             // 
             // miFileAddFiles
             // 
             this.miFileAddFiles.Name = "miFileAddFiles";
-            this.miFileAddFiles.Size = new System.Drawing.Size(134, 22);
+            this.miFileAddFiles.Size = new System.Drawing.Size(147, 22);
             this.miFileAddFiles.Text = "Add Files";
             this.miFileAddFiles.Click += new System.EventHandler(this.miFileAddFiles_Click);
             // 
@@ -177,7 +194,7 @@
             // 
             this.miFileExit.Name = "miFileExit";
             this.miFileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.miFileExit.Size = new System.Drawing.Size(134, 22);
+            this.miFileExit.Size = new System.Drawing.Size(147, 22);
             this.miFileExit.Text = "Exit";
             this.miFileExit.Click += new System.EventHandler(this.miFileExit_Click);
             // 
@@ -186,7 +203,8 @@
             this.miPlaylist.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.miPlaylist.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miPlaylistNew,
-            this.miPlaylistSelect});
+            this.miPlaylistSelect,
+            this.miSelectedPlaylist});
             this.miPlaylist.Image = ((System.Drawing.Image)(resources.GetObject("miPlaylist.Image")));
             this.miPlaylist.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.miPlaylist.Name = "miPlaylist";
@@ -199,13 +217,14 @@
             this.tbxmiPlaylistNew,
             this.miPlaylistNewCreate});
             this.miPlaylistNew.Name = "miPlaylistNew";
-            this.miPlaylistNew.Size = new System.Drawing.Size(145, 22);
+            this.miPlaylistNew.Size = new System.Drawing.Size(158, 22);
             this.miPlaylistNew.Text = "Create New";
             // 
             // tbxmiPlaylistNew
             // 
             this.tbxmiPlaylistNew.Name = "tbxmiPlaylistNew";
             this.tbxmiPlaylistNew.Size = new System.Drawing.Size(100, 23);
+            this.tbxmiPlaylistNew.ToolTipText = "Enter the name for the playlist.";
             // 
             // miPlaylistNewCreate
             // 
@@ -219,7 +238,7 @@
             this.miPlaylistSelect.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cbxmiPlaylistSelect});
             this.miPlaylistSelect.Name = "miPlaylistSelect";
-            this.miPlaylistSelect.Size = new System.Drawing.Size(145, 22);
+            this.miPlaylistSelect.Size = new System.Drawing.Size(158, 22);
             this.miPlaylistSelect.Text = "Select Playlist";
             // 
             // cbxmiPlaylistSelect
@@ -227,13 +246,72 @@
             this.cbxmiPlaylistSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxmiPlaylistSelect.Name = "cbxmiPlaylistSelect";
             this.cbxmiPlaylistSelect.Size = new System.Drawing.Size(121, 23);
-            this.cbxmiPlaylistSelect.Click += new System.EventHandler(this.cbxmiPlaylistSelect_Click);
+            this.cbxmiPlaylistSelect.SelectedIndexChanged += new System.EventHandler(this.cbxmiPlaylistSelect_SelectedIndexChanged);
+            // 
+            // miSelectedPlaylist
+            // 
+            this.miSelectedPlaylist.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miSelectPlaylistSync,
+            this.miPlaylistsSPAutoReset,
+            this.miSelectedPlaylistResetTimesPlayed});
+            this.miSelectedPlaylist.Name = "miSelectedPlaylist";
+            this.miSelectedPlaylist.Size = new System.Drawing.Size(158, 22);
+            this.miSelectedPlaylist.Text = "Selected Playlist";
+            // 
+            // miSelectPlaylistSync
+            // 
+            this.miSelectPlaylistSync.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cbxmiPlaylistSPSync});
+            this.miSelectPlaylistSync.Name = "miSelectPlaylistSync";
+            this.miSelectPlaylistSync.Size = new System.Drawing.Size(198, 22);
+            this.miSelectPlaylistSync.Text = "Sync";
+            this.miSelectPlaylistSync.ToolTipText = "Set this to \"Yes\" to add files to the playlist when they are added to one of the " +
+    "directories you added in this playlist.";
+            // 
+            // cbxmiPlaylistSPSync
+            // 
+            this.cbxmiPlaylistSPSync.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxmiPlaylistSPSync.Items.AddRange(new object[] {
+            "Yes",
+            "No"});
+            this.cbxmiPlaylistSPSync.Name = "cbxmiPlaylistSPSync";
+            this.cbxmiPlaylistSPSync.Size = new System.Drawing.Size(121, 23);
+            this.cbxmiPlaylistSPSync.ToolTipText = "When files get added to one of the playlist\'s folders it gets automatically added" +
+    " to the playlist.";
+            this.cbxmiPlaylistSPSync.SelectedIndexChanged += new System.EventHandler(this.cbxmiPlaylistSPSync_SelectedIndexChanged);
+            // 
+            // miPlaylistsSPAutoReset
+            // 
+            this.miPlaylistsSPAutoReset.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cbxmiPlaylistSPAutoReset});
+            this.miPlaylistsSPAutoReset.Name = "miPlaylistsSPAutoReset";
+            this.miPlaylistsSPAutoReset.Size = new System.Drawing.Size(198, 22);
+            this.miPlaylistsSPAutoReset.Text = "Auto reset times played";
+            // 
+            // cbxmiPlaylistSPAutoReset
+            // 
+            this.cbxmiPlaylistSPAutoReset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxmiPlaylistSPAutoReset.Items.AddRange(new object[] {
+            "Yes",
+            "No"});
+            this.cbxmiPlaylistSPAutoReset.Name = "cbxmiPlaylistSPAutoReset";
+            this.cbxmiPlaylistSPAutoReset.Size = new System.Drawing.Size(121, 23);
+            this.cbxmiPlaylistSPAutoReset.ToolTipText = "Set \"Yes\" if you want to reset the times played on all songs when a new song is a" +
+    "dded to the playlist.";
+            this.cbxmiPlaylistSPAutoReset.SelectedIndexChanged += new System.EventHandler(this.cbxmiPlaylistSPAutoReset_SelectedIndexChanged);
+            // 
+            // miSelectedPlaylistResetTimesPlayed
+            // 
+            this.miSelectedPlaylistResetTimesPlayed.Name = "miSelectedPlaylistResetTimesPlayed";
+            this.miSelectedPlaylistResetTimesPlayed.Size = new System.Drawing.Size(198, 22);
+            this.miSelectedPlaylistResetTimesPlayed.Text = "Reset times played";
+            this.miSelectedPlaylistResetTimesPlayed.Click += new System.EventHandler(this.miSelectedPlaylistResetTimesPlayed_Click);
             // 
             // miPreferences
             // 
             this.miPreferences.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.miPreferences.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cbxmiPreferencesMode,
+            this.playingModeToolStripMenuItem,
             this.toolStripMenuItem1});
             this.miPreferences.Image = ((System.Drawing.Image)(resources.GetObject("miPreferences.Image")));
             this.miPreferences.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -241,16 +319,22 @@
             this.miPreferences.Size = new System.Drawing.Size(81, 22);
             this.miPreferences.Text = "Preferences";
             // 
+            // playingModeToolStripMenuItem
+            // 
+            this.playingModeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cbxmiPreferencesMode});
+            this.playingModeToolStripMenuItem.Name = "playingModeToolStripMenuItem";
+            this.playingModeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.playingModeToolStripMenuItem.Text = "Playing Mode";
+            // 
             // cbxmiPreferencesMode
             // 
-            this.cbxmiPreferencesMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxmiPreferencesMode.Items.AddRange(new object[] {
-            "Smart Mode",
             "Normal Mode",
-            "Random Mode"});
+            "Random Mode",
+            "Smart Mode"});
             this.cbxmiPreferencesMode.Name = "cbxmiPreferencesMode";
             this.cbxmiPreferencesMode.Size = new System.Drawing.Size(121, 23);
-            this.cbxmiPreferencesMode.SelectedIndexChanged += new System.EventHandler(this.cbxmiPreferencesMode_SelectedIndexChanged);
             // 
             // toolStripMenuItem1
             // 
@@ -258,14 +342,13 @@
             this.cbmiPreferencesWriteToFile,
             this.tbxmiPreferencesWTFLocation});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(181, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
             this.toolStripMenuItem1.Text = "Write to file";
             // 
             // cbmiPreferencesWriteToFile
             // 
             this.cbmiPreferencesWriteToFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbmiPreferencesWriteToFile.Items.AddRange(new object[] {
-            "Never",
             "On new song",
             "Every second"});
             this.cbmiPreferencesWriteToFile.Name = "cbmiPreferencesWriteToFile";
@@ -276,6 +359,8 @@
             // 
             this.tbxmiPreferencesWTFLocation.Name = "tbxmiPreferencesWTFLocation";
             this.tbxmiPreferencesWTFLocation.Size = new System.Drawing.Size(100, 23);
+            this.tbxmiPreferencesWTFLocation.ToolTipText = "Fill in the location of the file you want to save the current status to - ending " +
+    "with .txt.";
             // 
             // miHelp
             // 
@@ -373,10 +458,12 @@
             this.clmAlbum,
             this.clmYear,
             this.clmDuration,
-            this.clmTimesPlayer,
+            this.clmTimesPlayed,
             this.clmLocation});
+            this.dgridSongs.ContextMenuStrip = this.cxmsGrid;
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
+            this.dgridSongs.RowHeadersVisible = false;
             this.dgridSongs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.Black;
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
@@ -387,6 +474,49 @@
             this.dgridSongs.Size = new System.Drawing.Size(597, 266);
             this.dgridSongs.TabIndex = 4;
             this.dgridSongs.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgridSongs_CellDoubleClick);
+            this.dgridSongs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgridSongs_KeyDown);
+            this.dgridSongs.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgridSongs_MouseDown);
+            // 
+            // cxmsGrid
+            // 
+            this.cxmsGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxmiPlaycount,
+            this.ctxmibtnDeleteFromPlaylist});
+            this.cxmsGrid.Name = "cxmsGrid";
+            this.cxmsGrid.Size = new System.Drawing.Size(177, 48);
+            // 
+            // ctxmiPlaycount
+            // 
+            this.ctxmiPlaycount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxmitbxPlaycount,
+            this.ctxmibtnPlaycountOK});
+            this.ctxmiPlaycount.Name = "ctxmiPlaycount";
+            this.ctxmiPlaycount.Size = new System.Drawing.Size(176, 22);
+            this.ctxmiPlaycount.Text = "Set times played";
+            // 
+            // ctxmitbxPlaycount
+            // 
+            this.ctxmitbxPlaycount.Name = "ctxmitbxPlaycount";
+            this.ctxmitbxPlaycount.Size = new System.Drawing.Size(100, 23);
+            // 
+            // ctxmibtnPlaycountOK
+            // 
+            this.ctxmibtnPlaycountOK.Name = "ctxmibtnPlaycountOK";
+            this.ctxmibtnPlaycountOK.Size = new System.Drawing.Size(160, 22);
+            this.ctxmibtnPlaycountOK.Text = "OK";
+            this.ctxmibtnPlaycountOK.Click += new System.EventHandler(this.ctxmibtnPlaycountOK_Click);
+            // 
+            // ctxmibtnDeleteFromPlaylist
+            // 
+            this.ctxmibtnDeleteFromPlaylist.Name = "ctxmibtnDeleteFromPlaylist";
+            this.ctxmibtnDeleteFromPlaylist.Size = new System.Drawing.Size(176, 22);
+            this.ctxmibtnDeleteFromPlaylist.Text = "Delete from playlist";
+            this.ctxmibtnDeleteFromPlaylist.Click += new System.EventHandler(this.ctxmibtnDeleteFromPlaylist_Click);
+            // 
+            // timer1s
+            // 
+            this.timer1s.Interval = 1000;
+            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
             // 
             // clmTitle
             // 
@@ -418,22 +548,17 @@
             this.clmDuration.Name = "clmDuration";
             this.clmDuration.ReadOnly = true;
             // 
-            // clmTimesPlayer
+            // clmTimesPlayed
             // 
-            this.clmTimesPlayer.HeaderText = "Times Played";
-            this.clmTimesPlayer.Name = "clmTimesPlayer";
-            this.clmTimesPlayer.ReadOnly = true;
+            this.clmTimesPlayed.HeaderText = "Times Played";
+            this.clmTimesPlayed.Name = "clmTimesPlayed";
+            this.clmTimesPlayed.ReadOnly = true;
             // 
             // clmLocation
             // 
             this.clmLocation.HeaderText = "Location";
             this.clmLocation.Name = "clmLocation";
             this.clmLocation.ReadOnly = true;
-            // 
-            // timer1s
-            // 
-            this.timer1s.Interval = 1000;
-            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
             // 
             // Form1
             // 
@@ -456,6 +581,7 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgridSongs)).EndInit();
+            this.cxmsGrid.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,7 +603,6 @@
         private System.Windows.Forms.ToolStripMenuItem miPlaylistSelect;
         private System.Windows.Forms.ToolStripComboBox cbxmiPlaylistSelect;
         private System.Windows.Forms.ToolStripDropDownButton miPreferences;
-        private System.Windows.Forms.ToolStripComboBox cbxmiPreferencesMode;
         private System.Windows.Forms.ToolStripDropDownButton miHelp;
         private System.Windows.Forms.ToolStripMenuItem miHelpAbout;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -488,18 +613,31 @@
         private System.Windows.Forms.ToolStripButton miPrevious;
         private System.Windows.Forms.ToolStripButton miNext;
         private System.Windows.Forms.Timer timer1s;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmTitle;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmArtist;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmAlbum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmYear;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmDuration;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmTimesPlayer;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmLocation;
         private System.Windows.Forms.ToolStripTextBox tbxmiPlaylistNew;
         private System.Windows.Forms.ToolStripMenuItem miPlaylistNewCreate;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripComboBox cbmiPreferencesWriteToFile;
         private System.Windows.Forms.ToolStripTextBox tbxmiPreferencesWTFLocation;
+        private ToolStripMenuItem miSelectedPlaylist;
+        private ToolStripMenuItem miSelectPlaylistSync;
+        private ToolStripComboBox cbxmiPlaylistSPSync;
+        private ContextMenuStrip cxmsGrid;
+        private ToolStripMenuItem ctxmiPlaycount;
+        private ToolStripTextBox ctxmitbxPlaycount;
+        private ToolStripMenuItem ctxmibtnPlaycountOK;
+        private ToolStripMenuItem ctxmibtnDeleteFromPlaylist;
+        private ToolStripMenuItem miSelectedPlaylistResetTimesPlayed;
+        private ToolStripMenuItem miPlaylistsSPAutoReset;
+        private ToolStripComboBox cbxmiPlaylistSPAutoReset;
+        private ToolStripMenuItem playingModeToolStripMenuItem;
+        private ToolStripComboBox cbxmiPreferencesMode;
+        private DataGridViewTextBoxColumn clmTitle;
+        private DataGridViewTextBoxColumn clmArtist;
+        private DataGridViewTextBoxColumn clmAlbum;
+        private DataGridViewTextBoxColumn clmYear;
+        private DataGridViewTextBoxColumn clmDuration;
+        private DataGridViewTextBoxColumn clmTimesPlayed;
+        private DataGridViewTextBoxColumn clmLocation;
     }
 }
 

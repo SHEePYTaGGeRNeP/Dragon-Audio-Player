@@ -1,47 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using NAudio;
 using NAudio.Wave;
 using System.IO;
 using TagLib;
+using System.Windows.Forms;
+using System.Linq;
 
-namespace Dragon_Audio_Player_2._0
+
+namespace Dragon_Audio_Player
 {
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       10/4/2014                   |
-    //      |   Version:    0.1                         |
+    //      |   Date:       26/06/2014                  |
+    //      |   Version:    0.2                         |
     //      |   Copyright © Double Dutch Dragons 2014   |
     //      ---------------------------------------------
 
 
     public class DRGNAudioPlayer
     {
-        const string FileName = "Playlists.txt";
+        private const string FileName = "Playlists.txt";
 
-        public enum ePlayingMode { Smart, Random, Normal };
+        private List<string> LogMessages = new List<string>();
+
+        public enum ePlayingMode
+        {
+            Smart,
+            Random,
+            Normal
+        };
+
         public ePlayingMode PlayingMode { get; set; }
         private IWavePlayer waveOutDevice;
         private AudioFileReader audioFileReader;
+
         private List<PlayList> playlists;
         private PlayList currentPlaylist;
         private AudioFile currentyPlaying;
 
-        public List<PlayList> Playlists { get { return playlists; } }
-        public PlayList CurrentPlaylist { get { return currentPlaylist; } }
-        public AudioFile CurrentlyPlaying { get { return currentyPlaying; } }
-        public TimeSpan CurrentTime { get { return audioFileReader.CurrentTime; } }
-        public string CurrentTimeString { get { return StaticClass.GetTimeString(CurrentTime); } }
-        public PlaybackState PlayingState { get { return waveOutDevice.PlaybackState; } }
-        public float Volume { get { return waveOutDevice.Volume; } }
+        public List<PlayList> Playlists
+        {
+            get { return playlists; }
+        }
+
+        public PlayList CurrentPlaylist
+        {
+            get { return currentPlaylist; }
+        }
+
+        public AudioFile CurrentlyPlaying
+        {
+            get { return currentyPlaying; }
+        }
+
+        public TimeSpan CurrentTime
+        {
+            get { return audioFileReader.CurrentTime; }
+        }
+
+        public string CurrentTimeString
+        {
+            get { return StaticClass.GetTimeString(CurrentTime); }
+        }
+
+        public PlaybackState PlayingState
+        {
+            get { return waveOutDevice.PlaybackState; }
+        }
+
+        public float Volume
+        {
+            get { return waveOutDevice.Volume; }
+        }
 
         public List<AudioFile> FinishedSongs = new List<AudioFile>();
 
         public string SavePlaylistsDirectory { get; set; }
-
 
 
         public DRGNAudioPlayer()
@@ -51,17 +88,22 @@ namespace Dragon_Audio_Player_2._0
                 waveOutDevice = new WaveOut();
                 waveOutDevice.PlaybackStopped += new EventHandler<StoppedEventArgs>(PlayBackEnds);
                 playlists = new List<PlayList>();
-                playlists.Add(new PlayList("All", null));
+                playlists.Add(new PlayList("All", null, null, null, false, true));
                 currentPlaylist = playlists[0];
-                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player")))
+                if (
+                    !Directory.Exists(Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player")))
                 {
-                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player"));
+                    Directory.CreateDirectory(
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Dragon Audio Player"));
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("DRGNAudioPlayer: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -72,14 +114,12 @@ namespace Dragon_Audio_Player_2._0
                 if (playlists[0].Songs.Count > 0)
                     return playlists[0].Songs[playlists[0].Songs.Count - 1];
                 else return null;
-
             }
         }
 
 
         public void SetPlayingMode(string p_text)
         {
-            
             string m_text = p_text.ToLower();
             if (m_text.Contains("normal"))
                 PlayingMode = ePlayingMode.Normal;
@@ -88,29 +128,43 @@ namespace Dragon_Audio_Player_2._0
             else
                 PlayingMode = ePlayingMode.Smart;
         }
+
         public void PlayNext()
         {
             try
             {
-                if (currentyPlaying != null)
+                if (currentPlaylist.Songs.Count > 0)
                 {
-                    currentyPlaying.TimesPlayed++;
-                    FinishedSongs.Add(CurrentlyPlaying);
+                    if (currentyPlaying != null)
+                    {
+                        currentyPlaying.TimesPlayed++;
+                        FinishedSongs.Add(CurrentlyPlaying);
+                    }
+                    switch (PlayingMode)
+                    {
+                        case ePlayingMode.Normal:
+                            PlayNextNormal();
+                            break;
+                        case ePlayingMode.Random:
+                            PlayNextRandom();
+                            break;
+                        case ePlayingMode.Smart:
+                            PlayNextSmart();
+                            break;
+                    }
                 }
-                switch (PlayingMode)
-                {
-                    case ePlayingMode.Normal: PlayNextNormal(); break;
-                    case ePlayingMode.Random: PlayNextRandom(); break;
-                    case ePlayingMode.Smart: PlayNextSmart(); break;
-                }
-
+                else
+                    MessageBox.Show("Playlist is empty.", "Empty playlist", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("PlayNext: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void PlayNextNormal()
         {
             try
@@ -124,10 +178,11 @@ namespace Dragon_Audio_Player_2._0
             catch (Exception ex)
             {
                 Console.WriteLine("PlayNextNormal: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
+
         private void PlayNextRandom()
         {
             try
@@ -139,26 +194,29 @@ namespace Dragon_Audio_Player_2._0
             catch (Exception ex)
             {
                 Console.WriteLine("PlayNextRandom: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
             }
-
         }
+
         private void PlayNextSmart()
         {
             try
             {
                 AudioFile[] m_songs = currentPlaylist.GetLowestTimesPlayed();
                 Random r = new Random();
-                string m_string = m_songs[r.Next(m_songs.Length - 1)].ToString();
-                Play(currentPlaylist.GetSongByString(m_string));
+                Play(currentPlaylist.GetSongByLocation(m_songs[r.Next(m_songs.Length - 1)].FileLocation));
             }
             catch (Exception ex)
             {
                 Console.WriteLine("PlayNextSmart: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
             }
-
         }
+
         // FIX  position = 175K  Length = 5M
         private void PlayBackEnds(object sender, StoppedEventArgs e)
         {
@@ -166,30 +224,6 @@ namespace Dragon_Audio_Player_2._0
                 PlayNext();
         }
 
-        public AudioFile GetFileByString(string p_string)
-        {
-            try
-            {
-                foreach (AudioFile af in playlists[0].Songs)
-                    if (af.ToString().ToLower() == p_string.ToLower())
-                        return af;
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return null;
-        }
-        public AudioFile GetFileByPath(string p_path)
-        {
-            try
-            {
-                foreach (AudioFile af in playlists[0].Songs)
-                    if (af != null && af.FileLocation != null && af.FileLocation.ToLower() == p_path.ToLower())
-                        return af;
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return null;
-        }
 
         public void Play(AudioFile p_file)
         {
@@ -220,15 +254,17 @@ namespace Dragon_Audio_Player_2._0
                 catch (Exception ex)
                 {
                     Console.WriteLine("Play: " + ex.Message);
-                    throw ex;
+                    MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ;
                 }
             }
+            else if (PlayingState == PlaybackState.Paused && currentyPlaying != null)
+                waveOutDevice.Play();
             else
-                if (PlayingState == PlaybackState.Paused && currentyPlaying != null)
-                    waveOutDevice.Play();
-                else
-                    PlayNext();
+                PlayNext();
         }
+
         public void Stop()
         {
             if (waveOutDevice != null)
@@ -241,51 +277,68 @@ namespace Dragon_Audio_Player_2._0
                 catch (Exception ex)
                 {
                     Console.WriteLine("Stop: " + ex.Message);
-                    throw ex;
+                    MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ;
                 }
             }
         }
+
         public void Pause()
         {
             if (waveOutDevice != null)
-                try { waveOutDevice.Pause(); }
+                try
+                {
+                    waveOutDevice.Pause();
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Pause: " + ex.Message);
-                    throw ex;
+                    MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.");
+                    ;
                 }
         }
-        public void Seek(long p_milliseconds, SeekOrigin p_seekOrigin)
+
+        public void Seek(long pMilliseconds, SeekOrigin p_seekOrigin)
         {
             if (audioFileReader != null)
             {
                 try
                 {
                     waveOutDevice.Pause();
-                    audioFileReader.CurrentTime = TimeSpan.FromMilliseconds(audioFileReader.Seek(p_milliseconds, p_seekOrigin));
+                    audioFileReader.CurrentTime =
+                        TimeSpan.FromMilliseconds(audioFileReader.Seek(pMilliseconds, p_seekOrigin));
                     waveOutDevice.Play();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Seek: " + ex.Message);
-                    throw ex;
+                    MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ;
                 }
             }
             else
-                throw new ArgumentNullException("Cannot seek audio to " + p_milliseconds + ":\naudioFileReader is null");
+                throw new ArgumentNullException("Cannot seek audio to " + pMilliseconds + ":\naudioFileReader is null");
         }
+
         public void ChangeVolume(float p_volume)
         {
-            try { waveOutDevice.Volume = p_volume; }
+            try
+            {
+                waveOutDevice.Volume = p_volume;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Volume: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
             }
         }
 
 
-        public void AddFolder(string p_path)
+        public void AddFolder(string p_path, bool p_autoreset)
         {
             try
             {
@@ -293,18 +346,26 @@ namespace Dragon_Audio_Player_2._0
                 foreach (string s in m_files)
                     if (s.EndsWith(".mp3") || s.EndsWith(".wav") || s.EndsWith(".wma") || s.EndsWith(".flac")
                         || s.EndsWith(".mp4") || s.EndsWith(".aac"))
-                        AddFile(s, false);
+                        AddFile(s, false, false);
+                if (!currentPlaylist.Directories.Contains(p_path))
+                    currentPlaylist.Directories.Add(p_path);
+                if (p_autoreset)
+                    currentPlaylist.ResetTimesPlayed();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("AddFolder: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
             }
         }
-        public void AddFile(string p_fileLocation, bool p_addIfExists)
+
+        public void AddFile(string p_fileLocation, bool p_addIfExists, bool p_autoreset)
         {
-            if (GetFileByPath(p_fileLocation) != null && p_addIfExists == false)
-            { }
+            if (currentPlaylist.GetSongByLocation(p_fileLocation) != null && p_addIfExists == false)
+            {
+            }
             else
             {
                 try
@@ -316,13 +377,36 @@ namespace Dragon_Audio_Player_2._0
                     uint m_year = tagFile.Tag.Year;
                     TimeSpan m_duration = tagFile.Properties.Duration;
 
-                    currentPlaylist.Songs.Add(new AudioFile(p_fileLocation, m_title, m_artist, m_album, m_year, m_duration));
+                    currentPlaylist.Songs.Add(new AudioFile(p_fileLocation, m_title, m_artist, m_album, m_year,
+                        m_duration));
+                    if (currentPlaylist.AutoResetOnSync && p_autoreset)
+                        currentPlaylist.ResetTimesPlayed();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("AddFile: " + ex.Message);
-                    throw ex;
+                    MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ;
                 }
+            }
+        }
+
+        public void RemoveSong(string p_fileLocation)
+        {
+            try
+            {
+                AudioFile m_af = currentPlaylist.GetSongByLocation(p_fileLocation);
+                if (currentyPlaying == m_af)
+                    Stop();
+                currentPlaylist.Songs.Remove(m_af);
+                currentPlaylist.Ignoredfiles.Add(m_af.FileLocation);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("RemoveSong: " + ex.Message);
+                MessageBox.Show("An error occurred:\n" + ex.Message + "\nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -333,6 +417,7 @@ namespace Dragon_Audio_Player_2._0
                     return p;
             return null;
         }
+
         public string[] GetPlaylistNames()
         {
             List<string> m_names = new List<string>();
@@ -340,64 +425,158 @@ namespace Dragon_Audio_Player_2._0
                 m_names.Add(p.Name);
             return m_names.ToArray();
         }
-        public void SetPlaylist(string p_name)
+
+        // CHANGED PLAYLIST = TRUE
+        public bool SetPlaylist(string p_name)
         {
             if (p_name == null || p_name == "")
-            { throw new ArgumentNullException("Playlist name cannot be null or empty."); }
+            {
+                throw new ArgumentNullException("Playlist name cannot be null or empty.");
+            }
             try
-            { currentPlaylist = GetPlaylist(p_name); }
+            {
+                PlayList m_pl = GetPlaylist(p_name);
+                if (m_pl == currentPlaylist)
+                    return false;
+                else
+                {
+                    currentPlaylist = GetPlaylist(p_name);
+                    Stop();
+                    return true;
+                }
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("SetPlaylist: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
+                return false;
             }
         }
+
 
         public void SavePlaylists()
         {
             try
             {
-                string m_text = "To view this easier go to http://jsonlint.com/ \n" + StaticClass.PlaylistsListToJSON(playlists);
+                string m_text = "To view this easier go to http://jsonlint.com/ \n" +
+                                StaticClass.PlaylistsListToJSON(playlists);
                 if (SavePlaylistsDirectory == null)
                 {
-                    SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
+                    SavePlaylistsDirectory =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Dragon Audio Player");
                     SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, FileName);
                 }
-                StaticClass.WriteToFile(SavePlaylistsDirectory, m_text); 
+                StaticClass.WriteToFile(SavePlaylistsDirectory, m_text);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("SavePlayLists(): " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ;
             }
         }
+
         public void LoadPlaylists()
         {
             try
             {
                 if (SavePlaylistsDirectory == null)
                 {
-                    SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
+                    SavePlaylistsDirectory =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Dragon Audio Player");
                     SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, FileName);
                 }
                 if (System.IO.File.Exists(SavePlaylistsDirectory))
                 {
                     try
-                    { List<PlayList> m_temp = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory)); }
-                    catch { return; }   // file is empty
+                    {
+                        List<PlayList> m_temp =
+                            StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
+                    }
+                    catch
+                    {
+                        return;
+                    } // file is empty
                     playlists = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
                     if (playlists.Count == 0)
                         throw new Exception("playlists.Playlists.Count is 0.");
                     else
                         currentPlaylist = playlists[0];
+                    foreach (PlayList pl in playlists)
+                    {
+                        UpdatePlaylist(pl);
+                    }
+                    if (LogMessages.Count > 0)
+                    {
+                        string m_message = "";
+                        foreach (string s in LogMessages)
+                            m_message += s + "\n";
+                        MessageBox.Show(m_message, "Playlists have been updated", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        LogMessages.Clear();
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("LoadPlaylists: " + ex.Message);
-                throw ex;
+                MessageBox.Show("An error occurred:\n" + ex.Message + " \nReport this error.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void UpdatePlaylist(PlayList p_pl)
+        {
+            try
+            {
+                if (p_pl.Sync == true)
+                {
+                    bool m_added = false;
+                    foreach (string s in p_pl.Directories)
+                        foreach (string s2 in Directory.GetFiles(s))
+                            if (StaticClass.EndsWithAudioFileType(s2) && !p_pl.SongExistsInPlaylist(s2) &&
+                                !p_pl.SongExistsInIgnoredFiles(s2))
+                            {
+                                m_added = true;
+                                AddFile(s2, false, p_pl.AutoResetOnSync);
+                                LogMessages.Add("Added " + Path.GetFileName(s2) + " to playlist: " + p_pl.Name + ".");
+                            }
+                    if (m_added)
+                        p_pl.ResetTimesPlayed();
+                }
+                List<AudioFile> m_remove = new List<AudioFile>();
+                foreach (AudioFile af in p_pl.Songs)
+                    if (!System.IO.File.Exists(af.FileLocation))
+                    {
+                        m_remove.Add(af);
+                        LogMessages.Add("Removed " + Path.GetFileName(af.FileLocation) + " from playlist: " + p_pl.Name +
+                                        ".");
+                    }
+                foreach (AudioFile af in m_remove)
+                    p_pl.Songs.Remove(af);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("UpdatePlaylist: " + ex.Message);
+                try
+                {
+                    MessageBox.Show("Error updating playlist " + p_pl.Name + ":\n" + ex.Message, "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                    // in case p_pl.name = null
+                catch
+                {
+                    MessageBox.Show("Error updating playlist:\n" + ex.Message, "Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
         public void CloseWaveOut()
         {
             if (waveOutDevice != null)
@@ -415,7 +594,6 @@ namespace Dragon_Audio_Player_2._0
                 waveOutDevice = null;
             }
         }
-
     }
 
 
@@ -427,7 +605,12 @@ namespace Dragon_Audio_Player_2._0
         public string Album { get; set; }
         public uint Year { get; set; }
         public TimeSpan Duration { get; set; }
-        public string DurationString { get { return StaticClass.GetTimeString(Duration); } }
+
+        public string DurationString
+        {
+            get { return StaticClass.GetTimeString(Duration); }
+        }
+
         public int TimesPlayed { get; set; }
 
 
@@ -447,37 +630,47 @@ namespace Dragon_Audio_Player_2._0
         {
             return Artist + " - " + Title;
         }
-
     }
+
     public class PlayList
     {
-        public List<AudioFile> Songs { get; set; }
         public string Name { get; set; }
+        public bool Sync = false;
+        public bool AutoResetOnSync = true;
+        public List<string> Ignoredfiles { get; set; }
+        public List<string> Directories { get; set; }
+        public List<AudioFile> Songs { get; set; }
 
-        public PlayList(string p_name, List<AudioFile> p_songs)
+
+        public PlayList(string p_name, List<AudioFile> p_songs, List<string> p_directories, List<string> p_ignoredfiles,
+            bool p_sync, bool p_autoresetonsync)
         {
-            Songs = new List<AudioFile>();
             Name = p_name;
+            Sync = p_sync;
+            AutoResetOnSync = p_autoresetonsync;
+            Ignoredfiles = new List<string>();
+            if (p_ignoredfiles != null)
+                foreach (string s in p_ignoredfiles)
+                    Ignoredfiles.Add(s);
+            Directories = new List<string>();
+            if (p_directories != null)
+                foreach (string s in p_directories)
+                    Directories.Add(s);
+            Songs = new List<AudioFile>();
             if (p_songs != null)
                 foreach (AudioFile af in p_songs)
                     Songs.Add(af);
         }
-        public AudioFile GetLastAddedSong(AudioFile p_af)
-        {
-            if (Songs.Count > 0)
-            {
-                return Songs[Songs.Count - 1];
-            }
-            else
-                return null;
-        }
-        public AudioFile GetSongByString(string p_string)
+
+
+        public AudioFile GetSongByLocation(string p_fileLocation)
         {
             foreach (AudioFile af in Songs)
-                if (af.ToString() == p_string)
+                if (af.FileLocation.ToLower() == p_fileLocation.ToLower())
                     return af;
             return null;
         }
+
         public AudioFile[] GetLowestTimesPlayed()
         {
             int m_lowest = int.MaxValue;
@@ -492,6 +685,34 @@ namespace Dragon_Audio_Player_2._0
             return m_list.ToArray();
         }
 
-    }
+        public AudioFile GetLastSong()
+        {
+            if (Songs.Count > 0)
+                return Songs[Songs.Count - 1];
+            else
+                return null;
+        }
 
+        public bool SongExistsInPlaylist(string p_path)
+        {
+            foreach (AudioFile af in Songs)
+                if (af.FileLocation.ToLower() == p_path.ToLower())
+                    return true;
+            return false;
+        }
+
+        public bool SongExistsInIgnoredFiles(string p_path)
+        {
+            foreach (string s in Ignoredfiles)
+                if (s.ToLower() == p_path.ToLower())
+                    return true;
+            return false;
+        }
+
+        public void ResetTimesPlayed()
+        {
+            foreach (AudioFile af in Songs)
+                af.TimesPlayed = 0;
+        }
+    }
 }

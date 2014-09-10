@@ -1,4 +1,4 @@
-﻿namespace Dragon_Audio_Player_2._0
+﻿namespace Dragon_Audio_Player
 {
     partial class AboutBox1
     {
@@ -120,7 +120,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Dragon_Audio_Player_2._0.Properties.Resources.Shield;
+            this.BackgroundImage = global::Dragon_Audio_Player.Properties.Resources.Shield;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(482, 239);
             this.Controls.Add(this.labelDescription);
