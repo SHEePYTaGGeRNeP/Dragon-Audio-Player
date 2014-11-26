@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Dragon_Audio_Player_2._0.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Volume" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">0.5</Value>
+    </Setting>
+    <Setting Name="FormSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">500, 300</Value>
+    </Setting>
+    <Setting Name="PlayingMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Smart Mode</Value>
+    </Setting>
+    <Setting Name="LastPlayinglist" Type="System.String" Scope="User">
+      <Value Profile="(Default)">All</Value>
+    </Setting>
+    <Setting Name="SongOutLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WriteToFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
