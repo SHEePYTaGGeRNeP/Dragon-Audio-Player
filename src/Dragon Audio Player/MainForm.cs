@@ -1,43 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
-using System.Threading;
+using Dragon_Audio_Player.Properties;
+using NAudio.Wave;
 
 namespace Dragon_Audio_Player
 {
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       02/5/2014                   |
-    //      |   Version:    0.1                         |
+    //      |   Date:       06/12/2014                  |
+    //      |   Version:    0.3                         |
     //      |   Copyright © Double Dutch Dragons 2014   |
     //      ---------------------------------------------
 
     public partial class MainForm : Form
     {
 
-        /// <BUGS>
-        /// 
         /// TODO:
         /// Check start up volume / properties
         /// Of Wolf And Man - End Stuck
-        /// Delete songs
-        /// Use JSONLint to edit
-        /// Save column width
-        /// Reset playcount
         /// time text / max length
         /// 
-        /// </summary>
 
-        bool mouseDown = false;
+        bool mouseDown;
 
-        DrgnAudioPlayer audioPlayer;
+        readonly DrgnAudioPlayer audioPlayer;
 
-        NAudio.Wave.PlaybackState PlayState { get { return audioPlayer.PlayingState; } }
+        PlaybackState PlayState { get { return audioPlayer.PlayingState; } }
 
 
         #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
@@ -61,11 +51,10 @@ namespace Dragon_Audio_Player
         {
             try 
             {
-
                 this.Size = Properties.Settings.Default.FormSize;
-                double m_vol = Convert.ToDouble(Properties.Settings.Default.Volume);
-                Console.WriteLine("Volume: " + m_vol.ToString());
-                tbarVolume.Value = Convert.ToInt32(Convert.ToDouble(Properties.Settings.Default.Volume) * 100);
+                double m_vol = Convert.ToDouble(Settings.Default.Volume);
+                Console.WriteLine("Volume: {0}", m_vol.ToString());
+                tbarVolume.Value = Convert.ToInt32(Convert.ToDouble(Settings.Default.Volume) * 100);
                 if (Properties.Settings.Default.PlayingMode == "")
                     cbxmiPreferencesMode.SelectedIndex = 2;
                 else
@@ -145,8 +134,7 @@ namespace Dragon_Audio_Player
 
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "Select a folder containing audio files";
+            FolderBrowserDialog fbd = new FolderBrowserDialog {Description = "Select a folder containing audio files"};
             if (DialogResult.OK == fbd.ShowDialog())
             {
                 audioPlayer.AddFolder(fbd.SelectedPath);
@@ -155,11 +143,13 @@ namespace Dragon_Audio_Player
         }
         private void miFileAddFiles_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select one or more audio files";
-            ofd.Multiselect = true;
-            ofd.Filter = ".mp3 file(*.mp3)|*.mp3|.wav file(*.wav)|*.wav|.aac file(*.aac)|*.aac"
-                + "|.flac file(*.flac)|*.flac|.mp4 file(*.mp4)|*.mp4|.wma file(*.wma)|*.wma|All files(*.*)|*.*";
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Title = "Select one or more audio files",
+                Multiselect = true,
+                Filter = ".mp3 file(*.mp3)|*.mp3|.wav file(*.wav)|*.wav|.aac file(*.aac)|*.aac"
+                         + "|.flac file(*.flac)|*.flac|.mp4 file(*.mp4)|*.mp4|.wma file(*.wma)|*.wma|All files(*.*)|*.*"
+            };
             if (DialogResult.OK == ofd.ShowDialog())
             {
                 foreach (string s in ofd.FileNames)
@@ -201,15 +191,20 @@ namespace Dragon_Audio_Player
 
         private void miHelpAbout_Click(object sender, EventArgs e)
         {
-            AboutBox1 ab = new AboutBox1();
+            DrgnAboutBox ab = new DrgnAboutBox();
             ab.ShowDialog();
         }
 
 
         private void miPlay_Click(object sender, EventArgs e)
         {
-            if (PlayState == NAudio.Wave.PlaybackState.Paused)
+            if (PlayState == PlaybackState.Paused)
+            {
                 audioPlayer.Play(null);
+                changeTitleSong(audioPlayer.CurrentlyPlaying);
+                if (!timer1s.Enabled)
+                    timer1s.Start();
+            }
             else if (dgridSongs.SelectedRows.Count == 1)
                 play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
             else
@@ -245,11 +240,10 @@ namespace Dragon_Audio_Player
         private void tbarPlaying_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
-            double dblValue;
 
             // Jump to the clicked location
-            dblValue = ((double)e.X / (double)tbarPlaying.Width) * (tbarPlaying.Maximum - tbarPlaying.Minimum);
-            tbarPlaying.Value = Convert.ToInt32(dblValue);
+            double lvDblValue = ((double)e.X / (double)tbarPlaying.Width) * (tbarPlaying.Maximum - tbarPlaying.Minimum);
+            tbarPlaying.Value = Convert.ToInt32(lvDblValue);
         }
         private void tbarPlaying_KeyDown(object sender, KeyEventArgs e)
         {
@@ -299,6 +293,7 @@ namespace Dragon_Audio_Player
         private void play(string p_string)
         {
             audioPlayer.Play(audioPlayer.GetFileByString(p_string));
+            tbarPlaying.Value = 0;
             changeTitleSong(audioPlayer.CurrentlyPlaying);
             afterPlay();
         }
@@ -316,7 +311,6 @@ namespace Dragon_Audio_Player
         {
             try
             {
-                tbarPlaying.Value = 0;
                 // Rounds up always, 170.1 = 171
                 if (timer1s.Enabled == false)
                     timer1s.Start();
@@ -346,7 +340,7 @@ namespace Dragon_Audio_Player
         private void seek(long p_milliseconds)
         {
             try
-            { audioPlayer.Seek(p_milliseconds, System.IO.SeekOrigin.Begin); }
+            { audioPlayer.Seek(p_milliseconds, SeekOrigin.Begin); }
             catch (Exception ex)
             {
                 MessageBox.Show("Error trying to Seek to value: " + p_milliseconds + " milliseconds\n" + ex.Message, "Seek error",

@@ -1,12 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using Dragon_Audio_Player;
 
 namespace Dragon_Audio_Player
 {
     internal static class Program
     {
+        //      ---------------------------------------------
+        //      |   Product:    Dragon Audio Player         |
+        //      |   By:         SHEePYTaGGeRNeP             |
+        //      |   Date:       06/12/2014                  |
+        //      |   Version:    0.3                         |
+        //      |   Copyright © Double Dutch Dragons 2014   |
+        //      ---------------------------------------------
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

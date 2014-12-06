@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
 namespace Dragon_Audio_Player
 {
-    partial class AboutBox1 : Form
+
+    //      ---------------------------------------------
+    //      |   Product:    Dragon Audio Player         |
+    //      |   By:         SHEePYTaGGeRNeP             |
+    //      |   Date:       06/12/2014                  |
+    //      |   Version:    0.3                         |
+    //      |   Copyright © Double Dutch Dragons 2014   |
+    //      ---------------------------------------------
+
+    partial class DrgnAboutBox : Form
     {
-        public AboutBox1()
+        public DrgnAboutBox()
         {
             InitializeComponent();
             this.Text = String.Format("About {0}", AppInfo.AssemblyTitle);
@@ -33,16 +39,16 @@ namespace Dragon_Audio_Player
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-                if (attributes.Length > 0)
+                object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+                if (lvAttributes.Length > 0)
                 {
-                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                    var titleAttribute = (AssemblyTitleAttribute)lvAttributes[0];
                     if (titleAttribute.Title != "")
                     {
                         return titleAttribute.Title;
                     }
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
         }
 
@@ -58,12 +64,12 @@ namespace Dragon_Audio_Player
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-                if (attributes.Length == 0)
+                object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+                if (lvAttributes.Length == 0)
                 {
                     return "";
                 }
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description;
+                return ((AssemblyDescriptionAttribute)lvAttributes[0]).Description;
             }
         }
 
@@ -71,12 +77,12 @@ namespace Dragon_Audio_Player
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length == 0)
+                object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                if (lvAttributes.Length == 0)
                 {
                     return "";
                 }
-                return ((AssemblyProductAttribute)attributes[0]).Product;
+                return ((AssemblyProductAttribute)lvAttributes[0]).Product;
             }
         }
 
@@ -84,12 +90,12 @@ namespace Dragon_Audio_Player
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
+                object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+                if (lvAttributes.Length == 0)
                 {
                     return "";
                 }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+                return ((AssemblyCopyrightAttribute)lvAttributes[0]).Copyright;
             }
         }
 
@@ -97,12 +103,12 @@ namespace Dragon_Audio_Player
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
+                object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+                if (lvAttributes.Length == 0)
                 {
                     return "";
                 }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
+                return ((AssemblyCompanyAttribute)lvAttributes[0]).Company;
             }
         }
         #endregion
