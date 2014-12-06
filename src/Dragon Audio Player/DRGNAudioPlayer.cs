@@ -18,9 +18,9 @@ namespace Dragon_Audio_Player
 
     public class DrgnAudioPlayer
     {
+        public enum EPlayingMode { Smart, Random, Normal };
         private const string _FILE_NAME = "Playlists.txt";
 
-        public enum EPlayingMode { Smart, Random, Normal };
         public EPlayingMode PlayingMode { get; set; }
         private IWavePlayer _waveOutDevice;
         private AudioFileReader _audioFileReader;
