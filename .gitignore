@@ -216,8 +216,4 @@ pip-log.txt
 
 #Locked bestanden
 ~lock*
-
-Documenten/notules/31-10-2014 Notulen Groep E.pdf
-Documenten/Database documenten/Database/proftaak database~2.sql
-Documenten/Database documenten/Database/Ontwikkel database~3.sql
-Projectfase 2/Notulen/?2014-11-20 Notulen.docx
+*.suo
