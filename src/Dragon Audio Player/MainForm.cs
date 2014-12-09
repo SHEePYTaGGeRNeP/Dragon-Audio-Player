@@ -17,17 +17,13 @@ namespace Dragon_Audio_Player
     public partial class MainForm : Form
     {
 
-        /// TODO:
-        /// Check start up volume / properties
-        /// Of Wolf And Man - End Stuck
-        /// time text / max length
-        /// 
+        /// TODO: https://docs.google.com/spreadsheets/d/1EPZA_mqK9Kh4qKLxEZsnqQuB8pNJWqQjR6zO2HlAzXQ/
 
-        bool mouseDown;
+        private bool _mouseDown;
 
-        readonly DrgnAudioPlayer audioPlayer;
+        private readonly DrgnAudioPlayer _audioPlayer;
 
-        PlaybackState PlayState { get { return audioPlayer.PlayingState; } }
+        private PlaybackState PlayState { get { return _audioPlayer.PlayingState; } }
 
 
         #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
@@ -35,95 +31,95 @@ namespace Dragon_Audio_Player
         public MainForm()
         {
             InitializeComponent();
-            tbarPlaying.MouseWheel += new MouseEventHandler(doNothing_MouseWheel);
-            audioPlayer = new DrgnAudioPlayer();
-            audioPlayer.LoadPlaylists();
+            tbarPlaying.MouseWheel += doNothing_MouseWheel;
+            _audioPlayer = new DrgnAudioPlayer();
+            _audioPlayer.LoadPlaylists();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            foreach (string s in audioPlayer.GetPlaylistNames())
-                cbxmiPlaylistSelect.Items.Add(s);
-            loadFromSettings();
-            refreshDataGrid();
+            foreach (string lvS in _audioPlayer.GetPlaylistNames())
+                cbxmiPlaylistSelect.Items.Add(lvS);
+            LoadFromSettings();
+            RefreshDataGrid();
         }
-        private void loadFromSettings()
+        private void LoadFromSettings()
         {
             try 
             {
-                this.Size = Properties.Settings.Default.FormSize;
-                double m_vol = Convert.ToDouble(Settings.Default.Volume);
-                Console.WriteLine("Volume: {0}", m_vol.ToString());
+                this.Size = Settings.Default.FormSize;
+                double lvVolume = Convert.ToDouble(Settings.Default.Volume);
+                Console.WriteLine("Volume: {0}", lvVolume);
                 tbarVolume.Value = Convert.ToInt32(Convert.ToDouble(Settings.Default.Volume) * 100);
-                if (Properties.Settings.Default.PlayingMode == "")
+                if (Settings.Default.PlayingMode == "")
                     cbxmiPreferencesMode.SelectedIndex = 2;
                 else
-                    cbxmiPreferencesMode.SelectedIndex = cbxmiPreferencesMode.Items.IndexOf(Properties.Settings.Default.PlayingMode);
-                cbxmiPlaylistSelect.SelectedIndex = cbxmiPlaylistSelect.Items.IndexOf(Properties.Settings.Default.LastPlayinglist);
-                audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+                    cbxmiPreferencesMode.SelectedIndex = cbxmiPreferencesMode.Items.IndexOf(Settings.Default.PlayingMode);
+                cbxmiPlaylistSelect.SelectedIndex = cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
+                _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to load settings:\n" + ex.Message, "Loading error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to load settings:\n" + lvEx.Message, "Loading error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            audioPlayer.SavePlaylists();
-            setSettings();
-            Properties.Settings.Default.Save();
-            audioPlayer.CloseWaveOut();
+            _audioPlayer.SavePlaylists();
+            SetSettings();
+            Settings.Default.Save();
+            _audioPlayer.CloseWaveOut();
         }
-        private void setSettings()
+        private void SetSettings()
         {
             try
             {
-                Properties.Settings.Default.FormSize = this.Size;
-                Properties.Settings.Default.Volume = Convert.ToInt32(audioPlayer.Volume);
-                Properties.Settings.Default.PlayingMode = cbxmiPreferencesMode.Text;
-                Properties.Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;
-                Properties.Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
+                Settings.Default.FormSize = this.Size;
+                Settings.Default.Volume = Convert.ToInt32(_audioPlayer.Volume);
+                Settings.Default.PlayingMode = cbxmiPreferencesMode.Text;
+                Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;                
+                Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to save settings:\n" + ex.Message, "Saving error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to save settings:\n" + lvEx.Message, "Saving error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void changeTitleSong(AudioFile p_af)
+        private void ChangeTitleSong(AudioFile pAf)
         {
-            if (p_af != null)
-                changeTitle(String.Format("[{0}] {1} - {2} / {3}", audioPlayer.PlayingState.ToString(),
-                    p_af.ToString(), audioPlayer.CurrentTimeString, p_af.DurationString));
+            if (pAf != null)
+                ChangeTitle(String.Format("[{0}] {1} - {2} / {3}", _audioPlayer.PlayingState.ToString(),
+                    pAf, _audioPlayer.CurrentTimeString, pAf.DurationString));
         }
-        private void changeTitle(string p_text)
+        private void ChangeTitle(string pText)
         {
-            if (p_text != "")
-                this.Text = p_text + " - " + AppInfo.AssemblyTitle;
+            if (pText != "")
+                this.Text = pText + " - " + AppInfo.AssemblyTitle;
             else
                 this.Text = AppInfo.AssemblyTitle;
         }
 
-        private void refreshDataGrid()
+        private void RefreshDataGrid()
         {
             dgridSongs.Rows.Clear();
-            foreach (AudioFile af in audioPlayer.CurrentPlaylist.Songs)
+            foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
             {
-                dgridSongs.Rows.Add(af.Title, af.Artist, af.Album, af.Year, af.DurationString, af.TimesPlayed, af.FileLocation);
+                dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString, lvAf.TimesPlayed, lvAf.FileLocation);
             }
         }
-        private void updateDataGrid(AudioFile p_af)
+        private void UpdateDataGrid(AudioFile pAf)
         {
             try
             {
-                foreach (DataGridViewRow row in dgridSongs.Rows)
+                foreach (DataGridViewRow lvRow in dgridSongs.Rows)
                 {
-                    if ((string)row.Cells[6].Value == p_af.FileLocation)
-                        row.Cells[5].Value = p_af.TimesPlayed;
+                    if ((string)lvRow.Cells[6].Value == pAf.FileLocation)
+                        lvRow.Cells[5].Value = pAf.TimesPlayed;
                 }
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to update DataGrid:\n" + ex.Message, "Update error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to update DataGrid:\n" + lvEx.Message, "Update error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        private void addAudioToGrid(AudioFile p_af)
+        private void AddAudioToGrid(AudioFile pAf)
         {
-            dgridSongs.Rows.Add(p_af.Title, p_af.Artist, p_af.Album, p_af.Year, p_af.DurationString, p_af.TimesPlayed, p_af.FileLocation);
+            dgridSongs.Rows.Add(pAf.Title, pAf.Artist, pAf.Album, pAf.Year, pAf.DurationString, pAf.TimesPlayed, pAf.FileLocation);
         }
 
 
@@ -134,28 +130,28 @@ namespace Dragon_Audio_Player
 
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog {Description = "Select a folder containing audio files"};
-            if (DialogResult.OK == fbd.ShowDialog())
+            FolderBrowserDialog lvFbd = new FolderBrowserDialog {Description = "Select a folder containing audio files"};
+            if (DialogResult.OK == lvFbd.ShowDialog())
             {
-                audioPlayer.AddFolder(fbd.SelectedPath);
-                refreshDataGrid();
+                _audioPlayer.AddFolder(lvFbd.SelectedPath);
+                RefreshDataGrid();
             }
         }
         private void miFileAddFiles_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog
+            OpenFileDialog lvOfd = new OpenFileDialog
             {
                 Title = "Select one or more audio files",
                 Multiselect = true,
                 Filter = ".mp3 file(*.mp3)|*.mp3|.wav file(*.wav)|*.wav|.aac file(*.aac)|*.aac"
                          + "|.flac file(*.flac)|*.flac|.mp4 file(*.mp4)|*.mp4|.wma file(*.wma)|*.wma|All files(*.*)|*.*"
             };
-            if (DialogResult.OK == ofd.ShowDialog())
+            if (DialogResult.OK == lvOfd.ShowDialog())
             {
-                foreach (string s in ofd.FileNames)
+                foreach (string lvS in lvOfd.FileNames)
                 {
-                    audioPlayer.AddFile(s, true);
-                    addAudioToGrid(audioPlayer.LastAudioFile);
+                    _audioPlayer.AddFile(lvS, true);
+                    AddAudioToGrid(_audioPlayer.LastAudioFile);
                 }
             }
         }
@@ -166,12 +162,12 @@ namespace Dragon_Audio_Player
 
         private void cbmiPreferencesWriteToFile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.WriteToFile = cbmiPreferencesWriteToFile.Text;
+            Settings.Default.WriteToFile = cbmiPreferencesWriteToFile.Text;
 
         }
         private void cbxmiPreferencesMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            audioPlayer.SetPlayingMode(cbxmiPreferencesMode.Text);
+            _audioPlayer.SetPlayingMode(cbxmiPreferencesMode.Text);
         }
 
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
@@ -186,7 +182,7 @@ namespace Dragon_Audio_Player
         private void cbxmiPlaylistSelect_Click(object sender, EventArgs e)
         {
             if (cbxmiPlaylistSelect.Text != "")
-                audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+                _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
         }
 
         private void miHelpAbout_Click(object sender, EventArgs e)
@@ -200,31 +196,31 @@ namespace Dragon_Audio_Player
         {
             if (PlayState == PlaybackState.Paused)
             {
-                audioPlayer.Play(null);
-                changeTitleSong(audioPlayer.CurrentlyPlaying);
+                _audioPlayer.Play(null);
+                ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
                 if (!timer1s.Enabled)
                     timer1s.Start();
             }
             else if (dgridSongs.SelectedRows.Count == 1)
-                play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
+                Play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
             else
-                playNext();
+                PlayNext();
         }
         private void miStop_Click(object sender, EventArgs e)
         {
-            stop();
+            Stop();
         }
         private void miPause_Click(object sender, EventArgs e)
         {
-            pause();
+            Pause();
         }
         private void miPrevious_Click(object sender, EventArgs e)
         {
-            previous();
+            Previous();
         }
         private void miNext_Click(object sender, EventArgs e)
         {
-            playNext();
+            PlayNext();
         }
 
 
@@ -236,10 +232,10 @@ namespace Dragon_Audio_Player
         #region >< >< >< >< >< >< >< >< >< ><  M E D I A   C O N T R O L S  >< >< >< >< ><
 
         private void tbarPlaying_MouseUp(object sender, MouseEventArgs e)
-        { mouseDown = false; }
+        { _mouseDown = false; }
         private void tbarPlaying_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseDown = true;
+            _mouseDown = true;
 
             // Jump to the clicked location
             double lvDblValue = ((double)e.X / (double)tbarPlaying.Width) * (tbarPlaying.Maximum - tbarPlaying.Minimum);
@@ -248,106 +244,106 @@ namespace Dragon_Audio_Player
         private void tbarPlaying_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
-                mouseDown = true;
+                _mouseDown = true;
         }
         private void tbarPlaying_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
-                mouseDown = false;
+                _mouseDown = false;
         }
 
         private void tbarPlaying_ValueChanged(object sender, EventArgs e)
         {
-            if (audioPlayer.CurrentlyPlaying != null)
+            if (_audioPlayer.CurrentlyPlaying != null)
             {
-                if (tbarPlaying.Value >= (int)audioPlayer.CurrentlyPlaying.Duration.TotalSeconds)
+                if (tbarPlaying.Value >= (int)_audioPlayer.CurrentlyPlaying.Duration.TotalSeconds)
                     try
-                    { audioPlayer.PlayNext(); }
-                    catch (Exception ex)
+                    { _audioPlayer.PlayNext(); }
+                    catch (Exception lvEx)
                     {
-                        MessageBox.Show("Error trying to play next song:\n" + ex.Message, "Next song error",
+                        MessageBox.Show("Error trying to play next song:\n" + lvEx.Message, "Next song error",
                           MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 else
                 {
-                    if (mouseDown)
+                    if (_mouseDown)
                     {
-                        long m_seekValue = (long)TimeSpan.FromSeconds(tbarPlaying.Value).TotalMilliseconds;
-                        seek(m_seekValue);
+                        long lvSeekValue = (long)TimeSpan.FromSeconds(tbarPlaying.Value).TotalMilliseconds;
+                        Seek(lvSeekValue);
                     }
                 }
             }
         }
         private void doNothing_MouseWheel(object sender, EventArgs e)
         {
-            HandledMouseEventArgs ee = (HandledMouseEventArgs)e;
-            ee.Handled = true;
+            HandledMouseEventArgs lvEe = (HandledMouseEventArgs)e;
+            lvEe.Handled = true;
         }
 
         private void tbarVolume_Scroll(object sender, EventArgs e)
         {
             float m_vol = (float)tbarVolume.Value / 100;
-            audioPlayer.ChangeVolume(m_vol);
-            Properties.Settings.Default.Volume = m_vol;
+            _audioPlayer.ChangeVolume(m_vol);
+            Settings.Default.Volume = m_vol;
         }
-        private void play(string p_string)
+        private void Play(string pString)
         {
-            audioPlayer.Play(audioPlayer.GetFileByString(p_string));
+            _audioPlayer.Play(_audioPlayer.GetFileByString(pString));
             tbarPlaying.Value = 0;
-            changeTitleSong(audioPlayer.CurrentlyPlaying);
-            afterPlay();
+            ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
+            AfterPlay();
         }
-        private void playNext()
+        private void PlayNext()
         {
             try
             {
-                audioPlayer.PlayNext();
-                afterPlay();
+                _audioPlayer.PlayNext();
+                AfterPlay();
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to play next song:\n" + ex.Message, "Next error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to play next song:\n" + lvEx.Message, "Next error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        private void afterPlay()
+        private void AfterPlay()
         {
             try
             {
                 // Rounds up always, 170.1 = 171
                 if (timer1s.Enabled == false)
                     timer1s.Start();
-                changeTitleSong(audioPlayer.CurrentlyPlaying);
+                ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to set controls to next song:\n" + ex.Message, "Control error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to set controls to next song:\n" + lvEx.Message, "Control error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void stop()
+        private void Stop()
         {
             try
             {
-                audioPlayer.Stop();
+                _audioPlayer.Stop();
                 timer1s.Stop();
-                changeTitle("");
+                ChangeTitle("");
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to stop audio:\n" + ex.Message, "Stopping error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to stop audio:\n" + lvEx.Message, "Stopping error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        private void pause()
+        private void Pause()
         {
-            audioPlayer.Pause();
-            changeTitleSong(audioPlayer.CurrentlyPlaying);
+            _audioPlayer.Pause();
+            ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
             timer1s.Stop();
         }
-        private void seek(long p_milliseconds)
+        private void Seek(long pMilliseconds)
         {
             try
-            { audioPlayer.Seek(p_milliseconds, SeekOrigin.Begin); }
-            catch (Exception ex)
+            { _audioPlayer.Seek(pMilliseconds, SeekOrigin.Begin); }
+            catch (Exception lvEx)
             {
-                MessageBox.Show("Error trying to Seek to value: " + p_milliseconds + " milliseconds\n" + ex.Message, "Seek error",
+                MessageBox.Show("Error trying to Seek to value: " + pMilliseconds + " milliseconds\n" + lvEx.Message, "Seek error",
                   MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void previous()
+        private void Previous()
         {
 
         }
@@ -361,33 +357,33 @@ namespace Dragon_Audio_Player
         {
             if (e.RowIndex > -1)
                 if (dgridSongs.SelectedRows.Count == 1)
-                    play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
+                    Play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
         }
 
         private void timer1s_Tick(object sender, EventArgs e)
         {
             try
             {
-                tbarPlaying.Maximum = Convert.ToInt32(Math.Ceiling((double)audioPlayer.CurrentlyPlaying.Duration.TotalSeconds));
-                int m_sec = Convert.ToInt32(Math.Round(audioPlayer.CurrentTime.TotalSeconds));
-                tbarPlaying.Value = m_sec;
-                if (audioPlayer.FinishedSongs.Count > 0)
+                tbarPlaying.Maximum = Convert.ToInt32(Math.Ceiling((double)_audioPlayer.CurrentlyPlaying.Duration.TotalSeconds));
+                int lvSec = Convert.ToInt32(Math.Round(_audioPlayer.CurrentTime.TotalSeconds));
+                tbarPlaying.Value = lvSec;
+                if (_audioPlayer.FinishedSongs.Count > 0)
                 {
-                    while (audioPlayer.FinishedSongs.Count > 0)
+                    while (_audioPlayer.FinishedSongs.Count > 0)
                     {
-                        updateDataGrid(audioPlayer.FinishedSongs[0]);
-                        audioPlayer.FinishedSongs.RemoveAt(0);
+                        UpdateDataGrid(_audioPlayer.FinishedSongs[0]);
+                        _audioPlayer.FinishedSongs.RemoveAt(0);
                     }
-                    writeSongInfo();
+                    WriteSongInfo();
                 }
                 if (cbmiPreferencesWriteToFile.SelectedIndex == 2 && tbxmiPreferencesWTFLocation.Text != "")
-                    writeSongInfo();
+                    WriteSongInfo();
             }
             catch
             { tbarPlaying.Value = tbarPlaying.Maximum; }
-            changeTitleSong(audioPlayer.CurrentlyPlaying);
+            ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
         }
-        private void writeSongInfo()
+        private void WriteSongInfo()
         {
             try
             {
@@ -398,18 +394,18 @@ namespace Dragon_Audio_Player
                         // 0 = dont write
                         // Write on new song
                         case 1: StaticClass.WriteToFile(tbxmiPreferencesWTFLocation.Text,
-                            String.Format("                 [{0}] {1} - {2}", audioPlayer.PlayingState.ToString(),
-                            audioPlayer.CurrentlyPlaying.Artist, audioPlayer.CurrentlyPlaying.Title)); break;
+                            String.Format("                 [{0}] {1} - {2}", _audioPlayer.PlayingState.ToString(),
+                            _audioPlayer.CurrentlyPlaying.Artist, _audioPlayer.CurrentlyPlaying.Title)); break;
                         // Write every second
                         case 2: StaticClass.WriteToFile(tbxmiPreferencesWTFLocation.Text,
-                            String.Format("                 [{0}] {1} - {2} {3} / {4}", audioPlayer.PlayingState.ToString(),
-                            audioPlayer.CurrentlyPlaying.Artist, audioPlayer.CurrentlyPlaying.Title, audioPlayer.CurrentTimeString,
-                            audioPlayer.CurrentlyPlaying.DurationString)); break;
+                            String.Format("                 [{0}] {1} - {2} {3} / {4}", _audioPlayer.PlayingState.ToString(),
+                            _audioPlayer.CurrentlyPlaying.Artist, _audioPlayer.CurrentlyPlaying.Title, _audioPlayer.CurrentTimeString,
+                            _audioPlayer.CurrentlyPlaying.DurationString)); break;
                     }
                 }
             }
-            catch (Exception ex)
-            { MessageBox.Show("Error trying to write song to textfile:\n" + ex.Message, "Writing error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception lvEx)
+            { MessageBox.Show("Error trying to write song to textfile:\n" + lvEx.Message, "Writing error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
 

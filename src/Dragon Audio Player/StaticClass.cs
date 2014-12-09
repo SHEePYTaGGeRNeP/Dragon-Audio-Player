@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 using File = TagLib.File;
 
@@ -32,7 +31,7 @@ namespace Dragon_Audio_Player
 
         public static bool EndsWithAudioFileType(string pFileLocation)
         {
-            return AudioFileTypes.Any(s => pFileLocation.ToLower().EndsWith(s));
+            return AudioFileTypes.Any(pS => pFileLocation.ToLower().EndsWith(pS));
         }
 
         public static List<PlayList> JSONToPlaylistsList(string pText)
@@ -56,10 +55,10 @@ namespace Dragon_Audio_Player
             try
             {
                 PlayListsList lvMList = new PlayListsList();
-                foreach (PlayList p in pLists)
-                    lvMList.Playlists.Add(p);
+                foreach (PlayList lvPlayList in pLists)
+                    lvMList.Playlists.Add(lvPlayList);
                 var lvMJson = JsonConvert.SerializeObject(lvMList);
-                return lvMJson.ToString();
+                return lvMJson;
             }
             catch (Exception lvEx)
             {
@@ -76,7 +75,7 @@ namespace Dragon_Audio_Player
                 {
                     if (lvAf == null || lvAf.FileLocation == null)
                         lvMList.Add(lvAf);
-                    else if (lvAf.Artist == null || lvAf.Title == null || lvAf.Duration == null || lvAf.Duration == TimeSpan.Zero)
+                    else if (lvAf.Artist == null || lvAf.Title == null || lvAf.Duration == TimeSpan.Zero)
                     {
                         File lvTagFile = File.Create(lvAf.FileLocation);
                         lvAf.Title = lvTagFile.Tag.Title;
@@ -98,29 +97,21 @@ namespace Dragon_Audio_Player
 
         public static string GetArtist(File pTag)
         {
-            try
-            {
-                string lvMArtist = pTag.Tag.FirstAlbumArtist;
-                if (lvMArtist != null) return lvMArtist;
-                lvMArtist = pTag.Tag.FirstPerformer;
-                if (lvMArtist != null) return lvMArtist;
-                lvMArtist = pTag.Tag.JoinedAlbumArtists;
-                if (lvMArtist != null) return lvMArtist;
+                string lvArtist = pTag.Tag.FirstAlbumArtist;
+                if (lvArtist != null) return lvArtist;
+                lvArtist = pTag.Tag.FirstPerformer;
+                if (lvArtist != null) return lvArtist;
+                lvArtist = pTag.Tag.JoinedAlbumArtists;
+                if (lvArtist != null) return lvArtist;
                 try
                 {
-                    lvMArtist = pTag.Tag.AlbumArtists[0];
+                    lvArtist = pTag.Tag.AlbumArtists[0];
                 }
                 catch
                 {
                     throw new Exception("Cannot find artist. Complain to developer please.");
                 }
-                return lvMArtist;
-            }
-            catch (Exception lvEx)
-            {
-                Console.WriteLine("getArtist: " + lvEx.Message);
-                throw lvEx;
-            }
+                return lvArtist;
         }
 
         public static string GetTimeString(TimeSpan pSpan)

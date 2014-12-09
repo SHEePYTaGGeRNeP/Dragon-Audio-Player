@@ -43,22 +43,14 @@ namespace Dragon_Audio_Player
 
         public DrgnAudioPlayer()
         {
-            try
+            _waveOutDevice = new WaveOut();
+            _waveOutDevice.PlaybackStopped += PlayBackEnds;
+            Playlists = new List<PlayList>();
+            Playlists.Add(new PlayList("All", null));
+            CurrentPlaylist = Playlists[0];
+            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player")))
             {
-                _waveOutDevice = new WaveOut();
-                _waveOutDevice.PlaybackStopped += new EventHandler<StoppedEventArgs>(PlayBackEnds);
-                Playlists = new List<PlayList>();
-                Playlists.Add(new PlayList("All", null));
-                CurrentPlaylist = Playlists[0];
-                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player")))
-                {
-                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player"));
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("DRGNAudioPlayer: " + ex.Message);
-                throw ex;
+                Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player"));
             }
         }
 
@@ -76,11 +68,11 @@ namespace Dragon_Audio_Player
 
         public void SetPlayingMode(string pText)
         {
-            
-            string m_text = pText.ToLower();
-            if (m_text.Contains("normal"))
+
+            string lvText = pText.ToLower();
+            if (lvText.Contains("normal"))
                 PlayingMode = EPlayingMode.Normal;
-            else if (m_text.Contains("random"))
+            else if (lvText.Contains("random"))
                 PlayingMode = EPlayingMode.Random;
             else
                 PlayingMode = EPlayingMode.Smart;
@@ -102,41 +94,33 @@ namespace Dragon_Audio_Player
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception lvEx)
             {
-                Console.WriteLine("PlayNext: " + ex.Message);
-                throw ex;
+                Console.WriteLine("PlayNext: " + lvEx.Message);
+                throw lvEx;
             }
         }
         private void PlayNextNormal()
         {
-            try
-            {
-                int m_index = CurrentPlaylist.Songs.IndexOf(CurrentlyPlaying);
-                if (m_index >= CurrentPlaylist.Songs.Count - 1)
-                    Play(CurrentPlaylist.Songs[0]);
-                else
-                    Play(CurrentPlaylist.Songs[m_index + 1]);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("PlayNextNormal: " + ex.Message);
-                throw ex;
-            }
+            int lvIndex = CurrentPlaylist.Songs.IndexOf(CurrentlyPlaying);
+            if (lvIndex >= CurrentPlaylist.Songs.Count - 1)
+                Play(CurrentPlaylist.Songs[0]);
+            else
+                Play(CurrentPlaylist.Songs[lvIndex + 1]);
 
         }
         private void PlayNextRandom()
         {
             try
             {
-                Random r = new Random();
-                int i = r.Next(CurrentPlaylist.Songs.Count - 1);
-                Play(CurrentPlaylist.Songs[i]);
+                Random lvR = new Random();
+                int lvI = lvR.Next(CurrentPlaylist.Songs.Count - 1);
+                Play(CurrentPlaylist.Songs[lvI]);
             }
-            catch (Exception ex)
+            catch (Exception lvEx)
             {
-                Console.WriteLine("PlayNextRandom: " + ex.Message);
-                throw ex;
+                Console.WriteLine("PlayNextRandom: " + lvEx.Message);
+                throw;
             }
 
         }
@@ -144,15 +128,15 @@ namespace Dragon_Audio_Player
         {
             try
             {
-                AudioFile[] m_songs = CurrentPlaylist.GetLowestTimesPlayed();
-                Random r = new Random();
-                string m_string = m_songs[r.Next(m_songs.Length - 1)].ToString();
-                Play(CurrentPlaylist.GetSongByString(m_string));
+                AudioFile[] lvSongs = CurrentPlaylist.GetLowestTimesPlayed();
+                Random lvR = new Random();
+                string lvString = lvSongs[lvR.Next(lvSongs.Length - 1)].ToString();
+                Play(CurrentPlaylist.GetSongByString(lvString));
             }
-            catch (Exception ex)
+            catch (Exception lvEx)
             {
-                Console.WriteLine("PlayNextSmart: " + ex.Message);
-                throw ex;
+                Console.WriteLine("PlayNextSmart: " + lvEx.Message);
+                throw;
             }
 
         }
@@ -165,26 +149,18 @@ namespace Dragon_Audio_Player
 
         public AudioFile GetFileByString(string pString)
         {
-            try
-            {
-                foreach (AudioFile af in Playlists[0].Songs)
-                    if (af.ToString().ToLower() == pString.ToLower())
-                        return af;
-            }
-            catch (Exception ex)
-            { throw ex; }
+            foreach (AudioFile lvAf in Playlists[0].Songs)
+                if (lvAf.ToString().ToLower() == pString.ToLower())
+                    return lvAf;
+
             return null;
         }
         public AudioFile GetFileByPath(string pPath)
         {
-            try
-            {
-                foreach (AudioFile af in Playlists[0].Songs)
-                    if (af != null && af.FileLocation != null && af.FileLocation.ToLower() == pPath.ToLower())
-                        return af;
-            }
-            catch (Exception ex)
-            { throw ex; }
+            foreach (AudioFile lvAf in Playlists[0].Songs)
+                if (lvAf != null && lvAf.FileLocation != null && lvAf.FileLocation.ToLower() == pPath.ToLower())
+                    return lvAf;
+
             return null;
         }
 
@@ -192,32 +168,24 @@ namespace Dragon_Audio_Player
         {
             if (pFile != null)
             {
-                try
-                {
-                    if (PlayingState == PlaybackState.Playing)
-                        if (CurrentlyPlaying.FileLocation != pFile.FileLocation)
-                            Stop();
-                        else
-                        {
-                            Pause();
-                            return;
-                        }
-                    if (PlayingState != PlaybackState.Paused)
+                if (PlayingState == PlaybackState.Playing)
+                    if (CurrentlyPlaying.FileLocation != pFile.FileLocation)
+                        Stop();
+                    else
                     {
-                        _audioFileReader = new AudioFileReader(pFile.FileLocation);
-                        WaveChannel32 wc = new WaveChannel32(_audioFileReader) {PadWithZeroes = false};
-                        _waveOutDevice = new WaveOut();
-                        _waveOutDevice.Init(wc);
-                        _waveOutDevice.PlaybackStopped += new EventHandler<StoppedEventArgs>(PlayBackEnds);
+                        Pause();
+                        return;
                     }
-                    _waveOutDevice.Play();
-                    CurrentlyPlaying = pFile;
-                }
-                catch (Exception ex)
+                if (PlayingState != PlaybackState.Paused)
                 {
-                    Console.WriteLine("Play: " + ex.Message);
-                    throw ex;
+                    _audioFileReader = new AudioFileReader(pFile.FileLocation);
+                    WaveChannel32 lvWc = new WaveChannel32(_audioFileReader) { PadWithZeroes = false };
+                    _waveOutDevice = new WaveOut();
+                    _waveOutDevice.Init(lvWc);
+                    _waveOutDevice.PlaybackStopped += PlayBackEnds;
                 }
+                _waveOutDevice.Play();
+                CurrentlyPlaying = pFile;
             }
             else
                 if (PlayingState == PlaybackState.Paused && CurrentlyPlaying != null)
@@ -227,75 +195,41 @@ namespace Dragon_Audio_Player
         }
         public void Stop()
         {
-            if (_waveOutDevice != null)
-            {
-                try
-                {
-                    _waveOutDevice.Stop();
-                    CurrentlyPlaying = null;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Stop: " + ex.Message);
-                    throw ex;
-                }
-            }
+            if (_waveOutDevice == null) return;
+            _waveOutDevice.Stop();
+            CurrentlyPlaying = null;
         }
+
         public void Pause()
         {
-            if (_waveOutDevice != null)
-                try { _waveOutDevice.Pause(); }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Pause: " + ex.Message);
-                    throw ex;
-                }
+            if (_waveOutDevice == null) return;
+            _waveOutDevice.Pause();
         }
+
         public void Seek(long pMilliseconds, SeekOrigin pSeekOrigin)
         {
             if (_audioFileReader != null)
             {
-                try
-                {
-                    _waveOutDevice.Pause();
-                    _audioFileReader.CurrentTime = TimeSpan.FromMilliseconds(_audioFileReader.Seek(pMilliseconds, pSeekOrigin));
-                    _waveOutDevice.Play();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Seek: " + ex.Message);
-                    throw ex;
-                }
+                _waveOutDevice.Pause();
+                _audioFileReader.CurrentTime = TimeSpan.FromMilliseconds(_audioFileReader.Seek(pMilliseconds, pSeekOrigin));
+                _waveOutDevice.Play();
             }
             else
-                throw new ArgumentNullException("Cannot seek audio to " + pMilliseconds + ":\naudioFileReader is null");
+                throw new ArgumentNullException("AudioFileReader is null");
         }
         public void ChangeVolume(float pVolume)
         {
-            try { _waveOutDevice.Volume = pVolume; }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Volume: " + ex.Message);
-                throw ex;
-            }
+            _waveOutDevice.Volume = pVolume;
         }
 
 
         public void AddFolder(string pPath)
         {
-            try
-            {
-                string[] m_files = Directory.GetFiles(pPath);
-                foreach (string s in m_files)
-                    if (s.EndsWith(".mp3") || s.EndsWith(".wav") || s.EndsWith(".wma") || s.EndsWith(".flac")
-                        || s.EndsWith(".mp4") || s.EndsWith(".aac"))
-                        AddFile(s, false);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("AddFolder: " + ex.Message);
-                throw ex;
-            }
+            string[] lvFiles = Directory.GetFiles(pPath);
+            foreach (string s in lvFiles)
+                if (s.EndsWith(".mp3") || s.EndsWith(".wav") || s.EndsWith(".wma") || s.EndsWith(".flac")
+                    || s.EndsWith(".mp4") || s.EndsWith(".aac"))
+                    AddFile(s, false);
         }
         public void AddFile(string pFileLocation, bool pAddIfExists)
         {
@@ -303,22 +237,14 @@ namespace Dragon_Audio_Player
             { }
             else
             {
-                try
-                {
-                    File tagFile = File.Create(pFileLocation);
-                    string m_title = tagFile.Tag.Title;
-                    string m_artist = StaticClass.GetArtist(tagFile);
-                    string m_album = tagFile.Tag.Album;
-                    uint m_year = tagFile.Tag.Year;
-                    TimeSpan m_duration = tagFile.Properties.Duration;
+                File lvTagFile = File.Create(pFileLocation);
+                string lvTitle = lvTagFile.Tag.Title;
+                string lvArtist = StaticClass.GetArtist(lvTagFile);
+                string lvAlbum = lvTagFile.Tag.Album;
+                uint lvYear = lvTagFile.Tag.Year;
+                TimeSpan lvDuration = lvTagFile.Properties.Duration;
 
-                    CurrentPlaylist.Songs.Add(new AudioFile(pFileLocation, m_title, m_artist, m_album, m_year, m_duration));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("AddFile: " + ex.Message);
-                    throw ex;
-                }
+                CurrentPlaylist.Songs.Add(new AudioFile(pFileLocation, lvTitle, lvArtist, lvAlbum, lvYear, lvDuration));
             }
         }
 
@@ -334,58 +260,36 @@ namespace Dragon_Audio_Player
         public void SetPlaylist(string pName)
         {
             if (string.IsNullOrEmpty(pName))
-            { throw new ArgumentNullException("Playlist name cannot be null or empty."); }
-            try
-            { CurrentPlaylist = GetPlaylist(pName); }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SetPlaylist: " + ex.Message);
-                throw ex;
-            }
+                throw new ArgumentNullException(pName);
+            CurrentPlaylist = GetPlaylist(pName);
         }
 
         public void SavePlaylists()
         {
-            try
+            string lvText = "To view this easier go to http://jsonlint.com/ \n" + StaticClass.PlaylistsListToJSON(Playlists);
+            if (SavePlaylistsDirectory == null)
             {
-                string m_text = "To view this easier go to http://jsonlint.com/ \n" + StaticClass.PlaylistsListToJSON(Playlists);
-                if (SavePlaylistsDirectory == null)
-                {
-                    SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
-                    SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
-                }
-                StaticClass.WriteToFile(SavePlaylistsDirectory, m_text); 
+                SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
+                SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SavePlayLists(): " + ex.Message);
-                throw ex;
-            }
+            StaticClass.WriteToFile(SavePlaylistsDirectory, lvText);
         }
         public void LoadPlaylists()
         {
-            try
+            if (SavePlaylistsDirectory == null)
             {
-                if (SavePlaylistsDirectory == null)
-                {
-                    SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
-                    SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
-                }
-                if (System.IO.File.Exists(SavePlaylistsDirectory))
-                {
-                    try
-                    { List<PlayList> m_temp = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory)); }
-                    catch { return; }   // file is empty
-                    Playlists = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
-                    if (Playlists.Count == 0)
-                        throw new Exception("playlists.Playlists.Count is 0.");
-                    CurrentPlaylist = Playlists[0];
-                }
+                SavePlaylistsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player");
+                SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
             }
-            catch (Exception ex)
+            if (System.IO.File.Exists(SavePlaylistsDirectory))
             {
-                Console.WriteLine("LoadPlaylists: " + ex.Message);
-                throw ex;
+                try
+                { List<PlayList> lvTemp = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory)); }
+                catch { return; }   // file is empty
+                Playlists = StaticClass.JSONToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
+                if (Playlists.Count == 0)
+                    throw new Exception("playlists.Playlists.Count is 0.");
+                CurrentPlaylist = Playlists[0];
             }
         }
         public void CloseWaveOut()
@@ -449,8 +353,8 @@ namespace Dragon_Audio_Player
             Songs = new List<AudioFile>();
             Name = pName;
             if (pSongs != null)
-                foreach (AudioFile af in pSongs)
-                    Songs.Add(af);
+                foreach (AudioFile lvAf in pSongs)
+                    Songs.Add(lvAf);
         }
         public AudioFile GetLastAddedSong(AudioFile pAf)
         {
@@ -458,24 +362,23 @@ namespace Dragon_Audio_Player
             {
                 return Songs[Songs.Count - 1];
             }
-            else
-                return null;
+            return null;
         }
         public AudioFile GetSongByString(string pString)
         {
-            foreach (AudioFile af in Songs)
-                if (af.ToString() == pString)
-                    return af;
+            foreach (AudioFile lvAf in Songs)
+                if (lvAf.ToString() == pString)
+                    return lvAf;
             return null;
         }
         public AudioFile[] GetLowestTimesPlayed()
         {
-            int m_lowest = int.MaxValue;
-            foreach (AudioFile af in Songs)
-                if (af.TimesPlayed < m_lowest)
-                    m_lowest = af.TimesPlayed;
+            int lvLowest = int.MaxValue;
+            foreach (AudioFile lvAf in Songs)
+                if (lvAf.TimesPlayed < lvLowest)
+                    lvLowest = lvAf.TimesPlayed;
 
-            return Songs.Where(pAf => pAf.TimesPlayed == m_lowest).ToArray();
+            return Songs.Where(pAf => pAf.TimesPlayed == lvLowest).ToArray();
         }
 
     }
