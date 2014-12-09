@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using Dragon_Audio_Player.Properties;
 using NAudio.Wave;
 
@@ -40,21 +41,28 @@ namespace Dragon_Audio_Player
         {
             foreach (string lvS in _audioPlayer.GetPlaylistNames())
                 cbxmiPlaylistSelect.Items.Add(lvS);
+            LoadUserInterface();
             LoadFromSettings();
             RefreshDataGrid();
         }
+
+        private void LoadUserInterface()
+        {
+            micbxPrefencesPlayingModes.Items.AddRange(Enum.GetNames(typeof(DrgnAudioPlayer.EPlayingMode)));
+        }
         private void LoadFromSettings()
         {
-            try 
+            try
             {
                 this.Size = Settings.Default.FormSize;
-                double lvVolume = Convert.ToDouble(Settings.Default.Volume);
-                Console.WriteLine("Volume: {0}", lvVolume);
-                tbarVolume.Value = Convert.ToInt32(Convert.ToDouble(Settings.Default.Volume) * 100);
+                tbarVolume.Value = Settings.Default.Volume;
+                //tbarVolume.Refresh();
+                _audioPlayer.ChangeVolume(tbarVolume.Value);
                 if (Settings.Default.PlayingMode == "")
-                    cbxmiPreferencesMode.SelectedIndex = 2;
+                    // G = text / value
+                    micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(DrgnAudioPlayer.EPlayingMode.Smart.ToString("G"));
                 else
-                    cbxmiPreferencesMode.SelectedIndex = cbxmiPreferencesMode.Items.IndexOf(Settings.Default.PlayingMode);
+                    micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(Settings.Default.PlayingMode);
                 cbxmiPlaylistSelect.SelectedIndex = cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
                 _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
             }
@@ -74,8 +82,8 @@ namespace Dragon_Audio_Player
             {
                 Settings.Default.FormSize = this.Size;
                 Settings.Default.Volume = Convert.ToInt32(_audioPlayer.Volume);
-                Settings.Default.PlayingMode = cbxmiPreferencesMode.Text;
-                Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;                
+                Settings.Default.PlayingMode = micbxPrefencesPlayingModes.Text;
+                Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;
                 Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
             }
             catch (Exception lvEx)
@@ -85,13 +93,22 @@ namespace Dragon_Audio_Player
         private void ChangeTitleSong(AudioFile pAf)
         {
             if (pAf != null)
+            {
                 ChangeTitle(String.Format("[{0}] {1} - {2} / {3}", _audioPlayer.PlayingState.ToString(),
                     pAf, _audioPlayer.CurrentTimeString, pAf.DurationString));
+                tsslblStatus.Text = String.Format("{0} | {1} / {2} | {3} | {4}", pAf.FileType,
+                    _audioPlayer.CurrentTimeString, pAf.DurationString, pAf.ToString(), pAf.FileLocation);
+            }
+            else
+            {
+                ChangeTitle("");
+                tsslblStatus.Text = "Stopped";
+            }
         }
         private void ChangeTitle(string pText)
         {
             if (pText != "")
-                this.Text = pText + " - " + AppInfo.AssemblyTitle;
+                this.Text = String.Format("{0} - ][ {1} ][", pText, AppInfo.AssemblyTitle);
             else
                 this.Text = AppInfo.AssemblyTitle;
         }
@@ -130,7 +147,7 @@ namespace Dragon_Audio_Player
 
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog lvFbd = new FolderBrowserDialog {Description = "Select a folder containing audio files"};
+            FolderBrowserDialog lvFbd = new FolderBrowserDialog { Description = "Select a folder containing audio files" };
             if (DialogResult.OK == lvFbd.ShowDialog())
             {
                 _audioPlayer.AddFolder(lvFbd.SelectedPath);
@@ -165,11 +182,18 @@ namespace Dragon_Audio_Player
             Settings.Default.WriteToFile = cbmiPreferencesWriteToFile.Text;
 
         }
-        private void cbxmiPreferencesMode_SelectedIndexChanged(object sender, EventArgs e)
+        private void tbxmiPreferencesWTFLocation_TextChanged(object sender, EventArgs e)
         {
-            _audioPlayer.SetPlayingMode(cbxmiPreferencesMode.Text);
+            if (tbxmiPreferencesWTFLocation.Text.Length > 0)
+                cbmiPreferencesWriteToFile.Enabled = true;
+            else
+                cbmiPreferencesWriteToFile.Enabled = false;
         }
-
+        private void micbxPrefencesPlayingModes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _audioPlayer.SetPlayingMode(micbxPrefencesPlayingModes.Text);
+        }
+        
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
         {
             if (tbxmiPlaylistNew.Text == "")
@@ -282,9 +306,9 @@ namespace Dragon_Audio_Player
 
         private void tbarVolume_Scroll(object sender, EventArgs e)
         {
-            float m_vol = (float)tbarVolume.Value / 100;
-            _audioPlayer.ChangeVolume(m_vol);
-            Settings.Default.Volume = m_vol;
+            _audioPlayer.ChangeVolume(tbarVolume.Value);
+            Settings.Default.Volume = tbarVolume.Value;
+            Settings.Default.Save();
         }
         private void Play(string pString)
         {
@@ -322,7 +346,7 @@ namespace Dragon_Audio_Player
             {
                 _audioPlayer.Stop();
                 timer1s.Stop();
-                ChangeTitle("");
+                ChangeTitleSong(null);
             }
             catch (Exception lvEx)
             { MessageBox.Show("Error trying to stop audio:\n" + lvEx.Message, "Stopping error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -374,9 +398,9 @@ namespace Dragon_Audio_Player
                         UpdateDataGrid(_audioPlayer.FinishedSongs[0]);
                         _audioPlayer.FinishedSongs.RemoveAt(0);
                     }
-                    WriteSongInfo();
                 }
-                if (cbmiPreferencesWriteToFile.SelectedIndex == 2 && tbxmiPreferencesWTFLocation.Text != "")
+                if (cbmiPreferencesWriteToFile.SelectedIndex == cbmiPreferencesWriteToFile.Items.IndexOf("Every second")
+                   && tbxmiPreferencesWTFLocation.Text != "")
                     WriteSongInfo();
             }
             catch
@@ -410,6 +434,8 @@ namespace Dragon_Audio_Player
 
 
         #endregion
+
+
 
 
 

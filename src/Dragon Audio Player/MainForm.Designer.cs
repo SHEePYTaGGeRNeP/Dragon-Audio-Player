@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlPlaying = new System.Windows.Forms.Panel();
             this.splitterPlaying = new System.Windows.Forms.Splitter();
             this.tbarPlaying = new System.Windows.Forms.TrackBar();
@@ -47,7 +47,6 @@
             this.miPlaylistSelect = new System.Windows.Forms.ToolStripMenuItem();
             this.cbxmiPlaylistSelect = new System.Windows.Forms.ToolStripComboBox();
             this.miPreferences = new System.Windows.Forms.ToolStripDropDownButton();
-            this.cbxmiPreferencesMode = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cbmiPreferencesWriteToFile = new System.Windows.Forms.ToolStripComboBox();
             this.tbxmiPreferencesWTFLocation = new System.Windows.Forms.ToolStripTextBox();
@@ -68,11 +67,16 @@
             this.clmTimesPlayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timer1s = new System.Windows.Forms.Timer(this.components);
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.micbxPrefencesPlayingModes = new System.Windows.Forms.ToolStripComboBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlPlaying.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarPlaying)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarVolume)).BeginInit();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgridSongs)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlPlaying
@@ -119,12 +123,12 @@
             this.tbarVolume.BackColor = System.Drawing.Color.White;
             this.tbarVolume.Dock = System.Windows.Forms.DockStyle.Left;
             this.tbarVolume.Location = new System.Drawing.Point(0, 0);
-            this.tbarVolume.Maximum = 100;
+            this.tbarVolume.Maximum = 1000;
             this.tbarVolume.Name = "tbarVolume";
             this.tbarVolume.Size = new System.Drawing.Size(109, 32);
             this.tbarVolume.TabIndex = 0;
             this.tbarVolume.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.tbarVolume.Value = 50;
+            this.tbarVolume.Value = 500;
             this.tbarVolume.Scroll += new System.EventHandler(this.tbarVolume_Scroll);
             // 
             // toolStrip1
@@ -162,14 +166,16 @@
             // miFileAddFolder
             // 
             this.miFileAddFolder.Name = "miFileAddFolder";
-            this.miFileAddFolder.Size = new System.Drawing.Size(134, 22);
+            this.miFileAddFolder.Size = new System.Drawing.Size(152, 22);
             this.miFileAddFolder.Text = "Add Folder";
+            this.miFileAddFolder.ToolTipText = "Adding a folder keeps the playlist synced with the actualy songs in the folder on" +
+    " your hard drive.";
             this.miFileAddFolder.Click += new System.EventHandler(this.miFileAddFolder_Click);
             // 
             // miFileAddFiles
             // 
             this.miFileAddFiles.Name = "miFileAddFiles";
-            this.miFileAddFiles.Size = new System.Drawing.Size(134, 22);
+            this.miFileAddFiles.Size = new System.Drawing.Size(152, 22);
             this.miFileAddFiles.Text = "Add Files";
             this.miFileAddFiles.Click += new System.EventHandler(this.miFileAddFiles_Click);
             // 
@@ -177,7 +183,7 @@
             // 
             this.miFileExit.Name = "miFileExit";
             this.miFileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.miFileExit.Size = new System.Drawing.Size(134, 22);
+            this.miFileExit.Size = new System.Drawing.Size(152, 22);
             this.miFileExit.Text = "Exit";
             this.miFileExit.Click += new System.EventHandler(this.miFileExit_Click);
             // 
@@ -199,7 +205,7 @@
             this.tbxmiPlaylistNew,
             this.miPlaylistNewCreate});
             this.miPlaylistNew.Name = "miPlaylistNew";
-            this.miPlaylistNew.Size = new System.Drawing.Size(145, 22);
+            this.miPlaylistNew.Size = new System.Drawing.Size(152, 22);
             this.miPlaylistNew.Text = "Create New";
             // 
             // tbxmiPlaylistNew
@@ -219,7 +225,7 @@
             this.miPlaylistSelect.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cbxmiPlaylistSelect});
             this.miPlaylistSelect.Name = "miPlaylistSelect";
-            this.miPlaylistSelect.Size = new System.Drawing.Size(145, 22);
+            this.miPlaylistSelect.Size = new System.Drawing.Size(152, 22);
             this.miPlaylistSelect.Text = "Select Playlist";
             // 
             // cbxmiPlaylistSelect
@@ -233,24 +239,13 @@
             // 
             this.miPreferences.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.miPreferences.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cbxmiPreferencesMode,
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
             this.miPreferences.Image = ((System.Drawing.Image)(resources.GetObject("miPreferences.Image")));
             this.miPreferences.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.miPreferences.Name = "miPreferences";
             this.miPreferences.Size = new System.Drawing.Size(81, 22);
             this.miPreferences.Text = "Preferences";
-            // 
-            // cbxmiPreferencesMode
-            // 
-            this.cbxmiPreferencesMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxmiPreferencesMode.Items.AddRange(new object[] {
-            "Smart Mode",
-            "Normal Mode",
-            "Random Mode"});
-            this.cbxmiPreferencesMode.Name = "cbxmiPreferencesMode";
-            this.cbxmiPreferencesMode.Size = new System.Drawing.Size(121, 23);
-            this.cbxmiPreferencesMode.SelectedIndexChanged += new System.EventHandler(this.cbxmiPreferencesMode_SelectedIndexChanged);
             // 
             // toolStripMenuItem1
             // 
@@ -258,12 +253,14 @@
             this.cbmiPreferencesWriteToFile,
             this.tbxmiPreferencesWTFLocation});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(181, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItem1.Text = "Write to file";
+            this.toolStripMenuItem1.ToolTipText = "Write the current playing status to a .txt file";
             // 
             // cbmiPreferencesWriteToFile
             // 
             this.cbmiPreferencesWriteToFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbmiPreferencesWriteToFile.Enabled = false;
             this.cbmiPreferencesWriteToFile.Items.AddRange(new object[] {
             "Never",
             "On new song",
@@ -276,6 +273,8 @@
             // 
             this.tbxmiPreferencesWTFLocation.Name = "tbxmiPreferencesWTFLocation";
             this.tbxmiPreferencesWTFLocation.Size = new System.Drawing.Size(100, 23);
+            this.tbxmiPreferencesWTFLocation.ToolTipText = "The location of the textfile you want to write  to.";
+            this.tbxmiPreferencesWTFLocation.TextChanged += new System.EventHandler(this.tbxmiPreferencesWTFLocation_TextChanged);
             // 
             // miHelp
             // 
@@ -291,7 +290,7 @@
             // miHelpAbout
             // 
             this.miHelpAbout.Name = "miHelpAbout";
-            this.miHelpAbout.Size = new System.Drawing.Size(107, 22);
+            this.miHelpAbout.Size = new System.Drawing.Size(152, 22);
             this.miHelpAbout.Text = "About";
             this.miHelpAbout.Click += new System.EventHandler(this.miHelpAbout_Click);
             // 
@@ -378,13 +377,13 @@
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
             this.dgridSongs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.DodgerBlue;
-            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.DodgerBlue;
+            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgridSongs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgridSongs.Size = new System.Drawing.Size(597, 266);
+            this.dgridSongs.Size = new System.Drawing.Size(597, 241);
             this.dgridSongs.TabIndex = 4;
             this.dgridSongs.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgridSongs_CellDoubleClick);
             // 
@@ -435,17 +434,53 @@
             this.timer1s.Interval = 1000;
             this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
             // 
-            // Form1
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.micbxPrefencesPlayingModes});
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem2.Text = "Playing mode";
+            this.toolStripMenuItem2.ToolTipText = "Normal goes from the top to the bottom.\r\nRandom randomizes randomly between songs" +
+    ".\r\nSmart randomizes between the least played songs.";
+            // 
+            // micbxPrefencesPlayingModes
+            // 
+            this.micbxPrefencesPlayingModes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.micbxPrefencesPlayingModes.Name = "micbxPrefencesPlayingModes";
+            this.micbxPrefencesPlayingModes.Size = new System.Drawing.Size(121, 23);
+            this.micbxPrefencesPlayingModes.ToolTipText = "Normal goes from the top to the bottom.\r\nRandom randomizes randomly between songs" +
+    ".\r\nSmart randomizes between the least played songs.";
+            this.micbxPrefencesPlayingModes.SelectedIndexChanged += new System.EventHandler(this.micbxPrefencesPlayingModes_SelectedIndexChanged);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsslblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 306);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(597, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // tsslblStatus
+            // 
+            this.tsslblStatus.Name = "tsslblStatus";
+            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
+            this.tsslblStatus.Text = "Stopped";
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(597, 328);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.dgridSongs);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.pnlPlaying);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Dragon Audio Player";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -456,6 +491,8 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgridSongs)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,7 +514,6 @@
         private System.Windows.Forms.ToolStripMenuItem miPlaylistSelect;
         private System.Windows.Forms.ToolStripComboBox cbxmiPlaylistSelect;
         private System.Windows.Forms.ToolStripDropDownButton miPreferences;
-        private System.Windows.Forms.ToolStripComboBox cbxmiPreferencesMode;
         private System.Windows.Forms.ToolStripDropDownButton miHelp;
         private System.Windows.Forms.ToolStripMenuItem miHelpAbout;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -500,6 +536,10 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripComboBox cbmiPreferencesWriteToFile;
         private System.Windows.Forms.ToolStripTextBox tbxmiPreferencesWTFLocation;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripComboBox micbxPrefencesPlayingModes;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tsslblStatus;
     }
 }
 
