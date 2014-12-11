@@ -42,10 +42,10 @@ namespace Dragon_Audio_Player
                 object[] lvAttributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
                 if (lvAttributes.Length > 0)
                 {
-                    var titleAttribute = (AssemblyTitleAttribute)lvAttributes[0];
-                    if (titleAttribute.Title != "")
+                    var lvTitleAttribute = (AssemblyTitleAttribute)lvAttributes[0];
+                    if (lvTitleAttribute.Title != "")
                     {
-                        return titleAttribute.Title;
+                        return lvTitleAttribute.Title;
                     }
                 }
                 return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);

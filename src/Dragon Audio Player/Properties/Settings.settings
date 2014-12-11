@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Dragon_Audio_Player.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Volume" Type="System.Single" Scope="User">
-      <Value Profile="(Default)">0.5</Value>
+    <Setting Name="Volume" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="FormSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">500, 300</Value>

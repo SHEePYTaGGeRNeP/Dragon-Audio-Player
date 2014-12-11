@@ -25,10 +25,10 @@ namespace Dragon_Audio_Player.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
-        public float Volume {
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int Volume {
             get {
-                return ((float)(this["Volume"]));
+                return ((int)(this["Volume"]));
             }
             set {
                 this["Volume"] = value;
