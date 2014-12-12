@@ -55,6 +55,7 @@ namespace Dragon_Audio_Player
             try
             {
                 this.Size = Settings.Default.FormSize;
+                Console.WriteLine("Volume: {0}", Settings.Default.Volume);
                 tbarVolume.Value = Settings.Default.Volume;
                 //tbarVolume.Refresh();
                 _audioPlayer.ChangeVolume(tbarVolume.Value);
@@ -81,7 +82,7 @@ namespace Dragon_Audio_Player
             try
             {
                 Settings.Default.FormSize = this.Size;
-                Settings.Default.Volume = Convert.ToInt32(_audioPlayer.Volume);
+                Settings.Default.Volume = tbarVolume.Value;
                 Settings.Default.PlayingMode = micbxPrefencesPlayingModes.Text;
                 Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;
                 Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
@@ -306,9 +307,11 @@ namespace Dragon_Audio_Player
 
         private void tbarVolume_Scroll(object sender, EventArgs e)
         {
+        }
+
+        private void tbarVolume_ValueChanged(object sender, EventArgs e)
+        {
             _audioPlayer.ChangeVolume(tbarVolume.Value);
-            Settings.Default.Volume = tbarVolume.Value;
-            Settings.Default.Save();
         }
         private void Play(string pString)
         {
@@ -434,6 +437,7 @@ namespace Dragon_Audio_Player
 
 
         #endregion
+
 
 
 

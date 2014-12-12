@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlPlaying = new System.Windows.Forms.Panel();
             this.splitterPlaying = new System.Windows.Forms.Splitter();
             this.tbarPlaying = new System.Windows.Forms.TrackBar();
@@ -130,6 +130,7 @@
             this.tbarVolume.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbarVolume.Value = 500;
             this.tbarVolume.Scroll += new System.EventHandler(this.tbarVolume_Scroll);
+            this.tbarVolume.ValueChanged += new System.EventHandler(this.tbarVolume_ValueChanged);
             // 
             // toolStrip1
             // 
@@ -377,11 +378,11 @@
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
             this.dgridSongs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.DodgerBlue;
-            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.DodgerBlue;
+            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgridSongs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgridSongs.Size = new System.Drawing.Size(597, 241);
             this.dgridSongs.TabIndex = 4;

@@ -20,15 +20,17 @@ namespace Dragon_Audio_Player
     {
         public enum EPlayingMode { Smart, Random, Normal };
         private const string _FILE_NAME = "Playlists.txt";
-
+        
         public EPlayingMode PlayingMode { get; private set; }
         private IWavePlayer _waveOutDevice;
-        private AudioFileReader _audioFileReader;
+        private MediaFoundationReader _mediaFoundationReader; 
+        //private MediaFoundationReader _mediaFoundationReader;
+
 
         public List<PlayList> Playlists { get; private set; }
         public PlayList CurrentPlaylist { get; private set; }
         public AudioFile CurrentlyPlaying { get; private set; }
-        public TimeSpan CurrentTime { get { return _audioFileReader.CurrentTime; } }
+        public TimeSpan CurrentTime { get { return _mediaFoundationReader.CurrentTime; } }
         public string CurrentTimeString { get { return StaticClass.GetTimeString(CurrentTime); } }
         public PlaybackState PlayingState { get { return _waveOutDevice.PlaybackState; } }
         public float Volume { get { return _waveOutDevice.Volume; } }
@@ -174,7 +176,7 @@ namespace Dragon_Audio_Player
         // FIX  position = 175K  Length = 5M
         private void PlayBackEnds(object sender, StoppedEventArgs e)
         {
-            if (_audioFileReader.Position >= _audioFileReader.Length)
+            if (_mediaFoundationReader.Position >= _mediaFoundationReader.Length)
                 PlayNext();
         }
 
@@ -199,8 +201,8 @@ namespace Dragon_Audio_Player
                         }
                     if (PlayingState != PlaybackState.Paused)
                     {
-                        _audioFileReader = new AudioFileReader(pFile.FileLocation);
-                        WaveChannel32 lvWc = new WaveChannel32(_audioFileReader) { PadWithZeroes = false };
+                        _mediaFoundationReader = new MediaFoundationReader(pFile.FileLocation);
+                        WaveChannel32 lvWc = new WaveChannel32(_mediaFoundationReader) { PadWithZeroes = false };
                         _waveOutDevice = new WaveOut();
                         _waveOutDevice.Init(lvWc);
                         _waveOutDevice.PlaybackStopped += PlayBackEnds;
@@ -233,15 +235,15 @@ namespace Dragon_Audio_Player
         }
         public void Seek(long pMilliseconds, SeekOrigin pSeekOrigin)
         {
-            if (_audioFileReader != null)
+            if (_mediaFoundationReader != null)
             {
                 _waveOutDevice.Pause();
-                _audioFileReader.CurrentTime =
-                    TimeSpan.FromMilliseconds(_audioFileReader.Seek(pMilliseconds, pSeekOrigin));
+                _mediaFoundationReader.CurrentTime =
+                    TimeSpan.FromMilliseconds(_mediaFoundationReader.Seek(pMilliseconds, pSeekOrigin));
                 _waveOutDevice.Play();
             }
             else
-                throw new ArgumentNullException("AudioFileReader is null");
+                throw new ArgumentNullException("MediaFoundationReader is null");
         }
 
         #endregion
@@ -312,10 +314,10 @@ namespace Dragon_Audio_Player
             {
                 _waveOutDevice.Stop();
             }
-            if (_audioFileReader != null)
+            if (_mediaFoundationReader != null)
             {
-                _audioFileReader.Dispose();
-                _audioFileReader = null;
+                _mediaFoundationReader.Dispose();
+                _mediaFoundationReader = null;
             }
             if (_waveOutDevice != null)
             {
