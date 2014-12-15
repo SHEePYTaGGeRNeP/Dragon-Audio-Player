@@ -1,4 +1,13 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StaticClass.cs" company="DoubleDutch Dragons">
+//   © 2014 DoubleDutch Dragons
+// </copyright>
+// <summary>
+//   Defines the StaticClass type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

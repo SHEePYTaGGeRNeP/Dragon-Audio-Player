@@ -1,4 +1,13 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainForm.cs" company="DoubleDutch Dragons">
+//   © 2014 DoubleDutch Dragons
+// </copyright>
+// <summary>
+//   Defines the MainForm type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;

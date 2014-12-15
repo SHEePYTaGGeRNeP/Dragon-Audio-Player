@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragon Audio Player", "Dragon Audio Player\Dragon Audio Player.csproj", "{FAC48CC5-850E-492E-BFB9-2B82DBF4D48B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -24,6 +26,16 @@ Global
 		{FAC48CC5-850E-492E-BFB9-2B82DBF4D48B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FAC48CC5-850E-492E-BFB9-2B82DBF4D48B}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{FAC48CC5-850E-492E-BFB9-2B82DBF4D48B}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0ABD71-86F6-496E-A0B9-0EF9AB8378FE}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,13 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DrgnAboutBox.cs" company="DoubleDutch Dragons">
+//   © 2014 DoubleDutch Dragons
+// </copyright>
+// <summary>
+//   Defines the DrgnAboutBox type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
