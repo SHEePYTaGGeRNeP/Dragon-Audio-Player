@@ -186,3 +186,5 @@ FakesAssemblies/
 *.exe
 *.exe
 *.pdb
+*.exe
+*.cache
