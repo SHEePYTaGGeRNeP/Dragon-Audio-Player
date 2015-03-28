@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Dragon_Audio_Player.Classes;
 using Dragon_Audio_Player.Properties;
 using NAudio.Wave;
 
@@ -19,9 +20,9 @@ namespace Dragon_Audio_Player
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       06/12/2014                  |
-    //      |   Version:    0.3                         |
-    //      |   Copyright © Double Dutch Dragons 2014   |
+    //      |   Date:       28/03/2015                  |
+    //      |   Version:    0.4                         |
+    //      |   Copyright © Double Dutch Dragons 2015   |
     //      ---------------------------------------------
 
     public partial class MainForm : Form
@@ -84,7 +85,7 @@ namespace Dragon_Audio_Player
             _audioPlayer.SavePlaylists();
             SetSettings();
             Settings.Default.Save();
-            _audioPlayer.CloseWaveOut();
+            _audioPlayer.Dispose();
         }
         private void SetSettings()
         {
@@ -449,7 +450,20 @@ namespace Dragon_Audio_Player
 
 
 
-
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            if (_audioPlayer != null)
+                _audioPlayer.Dispose();
+            base.Dispose(disposing);
+        }
 
 
 

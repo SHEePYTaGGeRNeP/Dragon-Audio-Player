@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="DoubleDutch Dragons">
-//   © 2014 DoubleDutch Dragons
+//   © 2015 DoubleDutch Dragons
 // </copyright>
 // <summary>
 //   Defines the Program type.
@@ -17,9 +17,9 @@ namespace Dragon_Audio_Player
         //      ---------------------------------------------
         //      |   Product:    Dragon Audio Player         |
         //      |   By:         SHEePYTaGGeRNeP             |
-        //      |   Date:       06/12/2014                  |
-        //      |   Version:    0.3                         |
-        //      |   Copyright © Double Dutch Dragons 2014   |
+        //      |   Date:       28/03/2015                  |
+        //      |   Version:    0.4                         |
+        //      |   Copyright © Double Dutch Dragons 2015   |
         //      ---------------------------------------------
 
         /// <summary>

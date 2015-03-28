@@ -14,14 +14,14 @@ using System.Linq;
 using Newtonsoft.Json;
 using File = TagLib.File;
 
-namespace Dragon_Audio_Player
+namespace Dragon_Audio_Player.Classes
 {
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       06/12/2014                  |
-    //      |   Version:    0.3                         |
-    //      |   Copyright © Double Dutch Dragons 2014   |
+    //      |   Date:       28/03/2015                  |
+    //      |   Version:    0.4                         |
+    //      |   Copyright © Double Dutch Dragons 2015   |
     //      ---------------------------------------------
 
     public static class StaticClass
@@ -30,11 +30,11 @@ namespace Dragon_Audio_Player
 
         private class PlayListsList
         {
-            public readonly List<PlayList> Playlists;
+            public readonly List<Playlist> Playlists;
 
             public PlayListsList()
             {
-                Playlists = new List<PlayList>();
+                Playlists = new List<Playlist>();
             }
         }
 
@@ -43,13 +43,13 @@ namespace Dragon_Audio_Player
             return AudioFileTypes.Any(pS => pFileLocation.ToLower().EndsWith(pS));
         }
 
-        public static List<PlayList> JSONToPlaylistsList(string pText)
+        public static List<Playlist> JsonToPlaylistsList(string pText)
         {
             try
             {
                 string lvMText = pText;
                 if (!pText.ToLower().StartsWith("{"))
-                    lvMText = pText.Remove(0, lvMText.IndexOf("{"));
+                    lvMText = pText.Remove(0, lvMText.IndexOf("{", StringComparison.Ordinal));
                 PlayListsList lvMList = JsonConvert.DeserializeObject<PlayListsList>(lvMText);
                 return lvMList.Playlists.Select(FixPlaylist).ToList();
             }
@@ -59,12 +59,12 @@ namespace Dragon_Audio_Player
             }
         }
 
-        public static string PlaylistsListToJSON(List<PlayList> pLists)
+        public static string PlaylistsListToJson(List<Playlist> pLists)
         {
             try
             {
                 PlayListsList lvMList = new PlayListsList();
-                foreach (PlayList lvPlayList in pLists)
+                foreach (Playlist lvPlayList in pLists)
                     lvMList.Playlists.Add(lvPlayList);
                 var lvMJson = JsonConvert.SerializeObject(lvMList);
                 return lvMJson;
@@ -75,7 +75,7 @@ namespace Dragon_Audio_Player
             }
         }
 
-        public static PlayList FixPlaylist(PlayList pPl)
+        public static Playlist FixPlaylist(Playlist pPl)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace Dragon_Audio_Player
 
         public static string GetTimeString(TimeSpan pSpan)
         {
-            string lvMReturn = "";
+            string lvMReturn;
             if (pSpan.Days > 0)
                 lvMReturn = new DateTime(pSpan.Ticks).ToString("dd.HH:mm:ss");
             else if (pSpan.Hours > 0)
