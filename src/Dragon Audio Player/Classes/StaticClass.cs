@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using File = TagLib.File;
 
 namespace Dragon_Audio_Player.Classes
 {
@@ -26,7 +25,9 @@ namespace Dragon_Audio_Player.Classes
 
     public static class StaticClass
     {
-        private static readonly string[] AudioFileTypes = {".mp3", ".wav", "aac", "flac", ".mp4", ".wma"};
+        public static readonly string[] AudioFileTypes = { ".mp3", ".wav", "aac", ".mp4", ".wma" };
+        public static string AppDataFolder { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player"); } }
+
 
         private class PlayListsList
         {
@@ -47,11 +48,18 @@ namespace Dragon_Audio_Player.Classes
         {
             try
             {
-                string lvMText = pText;
+                string lvText = pText;
                 if (!pText.ToLower().StartsWith("{"))
-                    lvMText = pText.Remove(0, lvMText.IndexOf("{", StringComparison.Ordinal));
-                PlayListsList lvMList = JsonConvert.DeserializeObject<PlayListsList>(lvMText);
-                return lvMList.Playlists.Select(FixPlaylist).ToList();
+                    // Removes all text until "{" is found.
+                    lvText = pText.Remove(0, lvText.IndexOf("{", StringComparison.Ordinal));
+                PlayListsList lvList = JsonConvert.DeserializeObject<PlayListsList>(lvText);
+                List<Playlist> lvPlaylists = new List<Playlist>();
+                foreach (Playlist lvPl in lvList.Playlists)
+                {
+                    lvPl.FixPlaylist();
+                    lvPlaylists.Add(lvPl);
+                }
+                return lvPlaylists;
             }
             catch (Exception lvEx)
             {
@@ -75,53 +83,6 @@ namespace Dragon_Audio_Player.Classes
             }
         }
 
-        public static Playlist FixPlaylist(Playlist pPl)
-        {
-            try
-            {
-                List<AudioFile> lvMList = new List<AudioFile>();
-                foreach (AudioFile lvAf in pPl.Songs)
-                {
-                    if (lvAf == null || lvAf.FileLocation == null)
-                        lvMList.Add(lvAf);
-                    else if (lvAf.Artist == null || lvAf.Title == null || lvAf.Duration == TimeSpan.Zero)
-                    {
-                        File lvTagFile = File.Create(lvAf.FileLocation);
-                        lvAf.Title = lvTagFile.Tag.Title;
-                        lvAf.Artist = GetArtist(lvTagFile);
-                        lvAf.Album = lvTagFile.Tag.Album;
-                        lvAf.Year = lvTagFile.Tag.Year;
-                        lvAf.Duration = lvTagFile.Properties.Duration;
-                    }
-                }
-                foreach (AudioFile lvAf in lvMList)
-                    pPl.Songs.Remove(lvAf);
-                return pPl;
-            }
-            catch (Exception lvEx)
-            {
-                throw new Exception(lvEx.Message);
-            }
-        }
-
-        public static string GetArtist(File pTag)
-        {
-                string lvArtist = pTag.Tag.FirstAlbumArtist;
-                if (lvArtist != null) return lvArtist;
-                lvArtist = pTag.Tag.FirstPerformer;
-                if (lvArtist != null) return lvArtist;
-                lvArtist = pTag.Tag.JoinedAlbumArtists;
-                if (lvArtist != null) return lvArtist;
-                try
-                {
-                    lvArtist = pTag.Tag.AlbumArtists[0];
-                }
-                catch
-                {
-                    throw new Exception("Cannot find artist. Complain to developer please.");
-                }
-                return lvArtist;
-        }
 
         public static string GetTimeString(TimeSpan pSpan)
         {
@@ -141,7 +102,7 @@ namespace Dragon_Audio_Player.Classes
                 throw new Exception("Cannot write to empty directory");
             if (!Directory.Exists(Path.GetDirectoryName(pLoc)))
                 Directory.CreateDirectory(pLoc);
-            System.IO.File.WriteAllText(pLoc, pText);
+            File.WriteAllText(pLoc, pText);
         }
     }
 }

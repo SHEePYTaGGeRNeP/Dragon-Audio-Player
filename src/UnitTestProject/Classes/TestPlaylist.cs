@@ -34,35 +34,46 @@ namespace UnitTestProject.Classes
         [TestMethod]
         public void TestGetLastAddedSong()
         {
-            AudioFile lvAf = new AudioFile("", "test1", "test1", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf = new AudioFile("", "test1", "test1","");
             _playlist.Songs.Add(lvAf);
             Assert.AreEqual(lvAf, _playlist.GetLastAddedSong());
-            AudioFile lvAf2 = new AudioFile("", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("", "test2", "test2","");
             _playlist.Songs.Add(lvAf2);
             Assert.AreEqual(lvAf2, _playlist.GetLastAddedSong());
         }
 
         [TestMethod]
+        public void TestGetLowestTimesPlayed()
+        {
+            AudioFile lvAf = new AudioFile("", "test1", "test1", "");
+            lvAf.TimesPlayed = 1;
+            _playlist.Songs.Add(lvAf);
+            AudioFile lvAf2 = new AudioFile("", "test2", "test2", "");
+            _playlist.Songs.Add(lvAf2);
+            AudioFile[] lvTimesPlayed = _playlist.GetLowestTimesPlayed();
+            Assert.AreEqual(lvAf2,lvTimesPlayed[0]);
+        }
+
+        [TestMethod]
         public void TestGetSongByString()
         {
-            AudioFile lvAf = new AudioFile("", "test1", "test1", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf = new AudioFile("", "test1", "test1", "");
             _playlist.Songs.Add(lvAf);
-            AudioFile lvAf2 = new AudioFile("", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("", "test2", "test2", "");
             _playlist.Songs.Add(lvAf2);
             AudioFile lvSongByString = _playlist.GetSongByString(lvAf2.ToString());
             Assert.AreEqual(lvAf2,lvSongByString);
         }
 
         [TestMethod]
-        public void TestGetLowestTimesPlayed()
+        public void TestGetSongByPath()
         {
-            AudioFile lvAf = new AudioFile("", "test1", "test1", "", 0, TimeSpan.FromMinutes(1));
-            lvAf.TimesPlayed = 1;
+            AudioFile lvAf = new AudioFile("test1L", "test1", "test1","");
             _playlist.Songs.Add(lvAf);
-            AudioFile lvAf2 = new AudioFile("", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("test2L", "test2", "test2", "");
             _playlist.Songs.Add(lvAf2);
-            AudioFile[] lvTimesPlayed = _playlist.GetLowestTimesPlayed();
-            Assert.AreEqual(lvAf2,lvTimesPlayed[0]);
+            AudioFile lvSongByPath = _playlist.GetSongByPath("test2L");
+            Assert.AreEqual(lvAf2,lvSongByPath);
         }
 
     }

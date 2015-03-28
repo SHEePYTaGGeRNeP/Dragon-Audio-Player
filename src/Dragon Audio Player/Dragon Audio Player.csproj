@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\AudioFile.cs" />
+    <Compile Include="Classes\CustomExceptions.cs" />
     <Compile Include="Classes\Playlist.cs" />
     <Compile Include="DrgnAboutBox.cs">
       <SubType>Form</SubType>

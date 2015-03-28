@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NAudio.Wave;
-using File = TagLib.File;
 
 namespace Dragon_Audio_Player.Classes
 {
@@ -30,9 +29,14 @@ namespace Dragon_Audio_Player.Classes
 
         /// TODO: https://docs.google.com/spreadsheets/d/1EPZA_mqK9Kh4qKLxEZsnqQuB8pNJWqQjR6zO2HlAzXQ/
 
-        public enum EPlayingMode { Smart, Random, Normal };
-        private const string _FILE_NAME = "Playlists.txt";
+        public enum EPlayingMode { smart, random, normal };
+
+        public static string PlaylistFileName
+        {
+            get { return Path.Combine(StaticClass.AppDataFolder, "Playlists.txt"); }
+        }
         
+
         public EPlayingMode PlayingMode { get; private set; }
         private IWavePlayer _waveOutDevice;
         private MediaFoundationReader _mediaFoundationReader;
@@ -52,9 +56,8 @@ namespace Dragon_Audio_Player.Classes
         // for previous song
         public List<AudioFile> FinishedSongs { get; private set; }
 
-        public string SavePlaylistsDirectory { get; set; }
 
-        
+
         public AudioFile LastAudioFile
         {
             get
@@ -70,20 +73,16 @@ namespace Dragon_Audio_Player.Classes
             _waveOutDevice = new WaveOut();
             _waveOutDevice.PlaybackStopped += PlayBackEnds;
             Playlists = new List<Playlist>();
-            Playlists.Add(new Playlist("All"));
             FinishedSongs = new List<AudioFile>();
+            Playlists.Add(new Playlist("All"));
             CurrentPlaylist = Playlists[0];
-            //if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player")))
-            //{
-            //    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dragon Audio Player"));
-            //}
         }
 
 
 
         public void SetPlayingMode(string pText)
         {
-            PlayingMode = (EPlayingMode)Enum.Parse(typeof(EPlayingMode), pText);
+            PlayingMode = (EPlayingMode)Enum.Parse(typeof(EPlayingMode), pText.ToLower());
         }
 
         /// <summary>
@@ -96,47 +95,8 @@ namespace Dragon_Audio_Player.Classes
             _waveOutDevice.Volume = (float)lvVolume;
         }
 
-        public AudioFile GetFileByString(string pString)
-        {
-            foreach (AudioFile lvAf in Playlists[0].Songs)
-                if (lvAf.ToString().ToLower() == pString.ToLower())
-                    return lvAf;
 
-            return null;
-        }
-        public AudioFile GetFileByPath(string pPath)
-        {
-            foreach (AudioFile lvAf in Playlists[0].Songs)
-                if (lvAf != null && lvAf.FileLocation != null && lvAf.FileLocation.ToLower() == pPath.ToLower())
-                    return lvAf;
-
-            return null;
-        }
-
-        public void AddFolder(string pPath)
-        {
-            string[] lvFiles = Directory.GetFiles(pPath);
-            foreach (string s in lvFiles)
-                if (s.EndsWith(".mp3") || s.EndsWith(".wav") || s.EndsWith(".wma") || s.EndsWith(".flac")
-                    || s.EndsWith(".mp4") || s.EndsWith(".aac"))
-                    AddFile(s, false);
-        }
-        public void AddFile(string pFileLocation, bool pAddIfExists)
-        {
-            if (GetFileByPath(pFileLocation) != null && pAddIfExists == false)
-            { }
-            else
-            {
-                File lvTagFile = File.Create(pFileLocation);
-                string lvTitle = lvTagFile.Tag.Title;
-                string lvArtist = StaticClass.GetArtist(lvTagFile);
-                string lvAlbum = lvTagFile.Tag.Album;
-                uint lvYear = lvTagFile.Tag.Year;
-                TimeSpan lvDuration = lvTagFile.Properties.Duration;
-
-                CurrentPlaylist.Songs.Add(new AudioFile(pFileLocation, lvTitle, lvArtist, lvAlbum, lvYear, lvDuration));
-            }
-        }
+        
 
         #region >< >< >< >< >< >< >< >< >< ><  P L A Y   N E X T  >< >< >< >< >< >< >< ><
         public void PlayNext()
@@ -148,13 +108,13 @@ namespace Dragon_Audio_Player.Classes
             }
             switch (PlayingMode)
             {
-                case EPlayingMode.Normal:
+                case EPlayingMode.normal:
                     PlayNextNormal();
                     break;
-                case EPlayingMode.Random:
+                case EPlayingMode.random:
                     PlayNextRandom();
                     break;
-                case EPlayingMode.Smart:
+                case EPlayingMode.smart:
                     PlayNextSmart();
                     break;
             }
@@ -162,28 +122,35 @@ namespace Dragon_Audio_Player.Classes
 
         private void PlayNextNormal()
         {
-            int lvIndex = CurrentPlaylist.Songs.IndexOf(CurrentlyPlaying);
-            if (lvIndex >= CurrentPlaylist.Songs.Count - 1)
-                Play(CurrentPlaylist.Songs[0]);
-            else
-                Play(CurrentPlaylist.Songs[lvIndex + 1]);
+            if (CurrentPlaylist != null && CurrentPlaylist.Songs != null && CurrentPlaylist.Songs.Count > 0)
+            {
+                int lvIndex = CurrentPlaylist.Songs.IndexOf(CurrentlyPlaying);
+                if (lvIndex >= CurrentPlaylist.Songs.Count - 1)
+                    Play(CurrentPlaylist.Songs[0]);
+                else
+                    Play(CurrentPlaylist.Songs[lvIndex + 1]);
+            }
 
         }
         private void PlayNextRandom()
         {
-            Random lvR = new Random();
-            int lvI = lvR.Next(CurrentPlaylist.Songs.Count - 1);
-            Play(CurrentPlaylist.Songs[lvI]);
-
+            if (CurrentPlaylist != null && CurrentPlaylist.Songs != null && CurrentPlaylist.Songs.Count > 0)
+            {
+                Random lvR = new Random();
+                int lvI = lvR.Next(CurrentPlaylist.Songs.Count - 1);
+                Play(CurrentPlaylist.Songs[lvI]);
+            }
 
         }
         private void PlayNextSmart()
         {
-            AudioFile[] lvSongs = CurrentPlaylist.GetLowestTimesPlayed();
-            Random lvR = new Random();
-            string lvString = lvSongs[lvR.Next(lvSongs.Length - 1)].ToString();
-            Play(CurrentPlaylist.GetSongByString(lvString));
-
+            if (CurrentPlaylist != null && CurrentPlaylist.Songs != null && CurrentPlaylist.Songs.Count > 0)
+            {
+                AudioFile[] lvSongs = CurrentPlaylist.GetLowestTimesPlayed();
+                Random lvR = new Random();
+                string lvString = lvSongs[lvR.Next(lvSongs.Length - 1)].ToString();
+                Play(CurrentPlaylist.GetSongByString(lvString));
+            }
         }
 
         // FIX  position = 175K  Length = 5M
@@ -230,7 +197,7 @@ namespace Dragon_Audio_Player.Classes
             }
             catch (Exception lvEx)
             {
-                Console.WriteLine(lvEx.Message + "  " + pFile.ToString());
+                Console.WriteLine(lvEx.Message + "\n" + pFile.ToString());
                 throw;
             }
 
@@ -244,7 +211,8 @@ namespace Dragon_Audio_Player.Classes
         public void Pause()
         {
             if (_waveOutDevice == null) return;
-            _waveOutDevice.Pause();
+            if (CurrentlyPlaying != null)
+                _waveOutDevice.Pause();
         }
         public void Seek(long pMilliseconds, SeekOrigin pSeekOrigin)
         {
@@ -266,7 +234,7 @@ namespace Dragon_Audio_Player.Classes
         #region >< >< >< >< >< >< >< >< >< ><  P L A Y L I S T S  >< >< >< >< >< >< >< ><
         public Playlist GetPlaylist(string pName)
         {
-            return Playlists.FirstOrDefault(p => String.Equals(p.Name, pName, StringComparison.CurrentCultureIgnoreCase));
+            return Playlists.Find(p => String.Equals(p.Name, pName, StringComparison.CurrentCultureIgnoreCase));
         }
         public string[] GetPlaylistNames()
         {
@@ -275,52 +243,47 @@ namespace Dragon_Audio_Player.Classes
         public void SetPlaylist(string pName)
         {
             if (string.IsNullOrEmpty(pName))
-                throw new ArgumentNullException(pName);
-            CurrentPlaylist = GetPlaylist(pName);
+                throw new ArgumentNullException("Playlist name is empty.");
+            Playlist lvPlaylist = GetPlaylist(pName);
+            if (lvPlaylist != null)
+                CurrentPlaylist = lvPlaylist;
+            else
+                throw new ArgumentException("Cannot find playlist: " + pName);
         }
-        public void SavePlaylists()
+        public void SavePlaylists(string pFileLocation)
         {
             string lvText = "To view this easier go to http://jsonlint.com/ \n" +
                             StaticClass.PlaylistsListToJson(Playlists);
-            if (SavePlaylistsDirectory == null)
-            {
-                SavePlaylistsDirectory =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Dragon Audio Player");
-                SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
-            }
-            StaticClass.WriteToFile(SavePlaylistsDirectory, lvText);
+            StaticClass.WriteToFile(pFileLocation, lvText);
         }
-        public void LoadPlaylists()
+        public void LoadPlaylists(string pFileLocation)
         {
-            if (SavePlaylistsDirectory == null)
-            {
-                SavePlaylistsDirectory =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Dragon Audio Player");
-                SavePlaylistsDirectory = Path.Combine(SavePlaylistsDirectory, _FILE_NAME);
-            }
-            if (System.IO.File.Exists(SavePlaylistsDirectory))
+            if (File.Exists(PlaylistFileName))
             {
                 try
-                {
-                    List<Playlist> lvTemp =
-                        StaticClass.JsonToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
-                }
+                { StaticClass.JsonToPlaylistsList(File.ReadAllText(PlaylistFileName)); }
                 catch
                 {
+                    // file is empty
                     return;
-                } // file is empty
-                Playlists = StaticClass.JsonToPlaylistsList(System.IO.File.ReadAllText(SavePlaylistsDirectory));
-                if (Playlists.Count == 0)
-                    throw new Exception("playlists.Playlists.Count is 0.");
-                CurrentPlaylist = Playlists[0];
+                }
+                Playlists = StaticClass.JsonToPlaylistsList(File.ReadAllText(PlaylistFileName));
+                if (Playlists.Count > 0)
+                    CurrentPlaylist = Playlists[0];
             }
+        }
+        public void DeleteSongFromPlaylist(AudioFile pAf)
+        {
+            if (pAf == null)
+                throw new ArgumentNullException();
+            if (CurrentlyPlaying == pAf)
+                Stop();
+            CurrentPlaylist.Songs.Remove(pAf);
         }
 
         #endregion
 
-        
+
         public void Dispose()
         {
             Dispose(true);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using Dragon_Audio_Player.Classes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,8 +17,9 @@ namespace UnitTestProject.Classes
         //      |   Copyright © Double Dutch Dragons 2015   |
         //      ---------------------------------------------
 
-        private const string _PLAYLIST_JSON =
-            "{\"Playlists\":[{\"Songs\":[{\"Title\":\"test\",\"FileLocation\":\"test\",\"Artist\":\"test\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:01:00\",\"FileType\":\"\",\"DurationString\":\"01:00\",\"TimesPlayed\":0},{\"Title\":\"test2\",\"FileLocation\":\"test2\",\"Artist\":\"test2\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:01:00\",\"FileType\":\"\",\"DurationString\":\"01:00\",\"TimesPlayed\":0}],\"Name\":\"test\"}]}";
+        private const string _PLAYLIST_JSON = 
+            "{\"Playlists\":[{\"Songs\":[{\"Title\":\"test\",\"FileLocation\":\"test\",\"Artist\":\"test\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0},{\"Title\":\"test2\",\"FileLocation\":\"test2\",\"Artist\":\"test2\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0}],\"Name\":\"test\"}]}";
+           
 
         [TestMethod]
         public void TestEndsWithAudioFileType()
@@ -34,9 +34,9 @@ namespace UnitTestProject.Classes
         {
             List<Playlist> lvPlaylists = new List<Playlist>();
             Playlist lvPlaylist = new Playlist("test");
-            AudioFile lvAf = new AudioFile("test", "test", "test", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf = new AudioFile("test", "test", "test", "");
             lvPlaylist.Songs.Add(lvAf);
-            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "");
             lvPlaylist.Songs.Add(lvAf2);
             lvPlaylists.Add(lvPlaylist);
 
@@ -49,9 +49,9 @@ namespace UnitTestProject.Classes
         {
             List<Playlist> lvPlaylists = new List<Playlist>();
             Playlist lvPlaylist = new Playlist("test");
-            AudioFile lvAf = new AudioFile("test", "test", "test", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf = new AudioFile("test", "test", "test", "");
             lvPlaylist.Songs.Add(lvAf);
-            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "");
             lvPlaylist.Songs.Add(lvAf2);
             lvPlaylists.Add(lvPlaylist);
 
@@ -65,12 +65,12 @@ namespace UnitTestProject.Classes
         public void TestFixPlaylist()
         {
             Playlist lvPlaylist = new Playlist("test");
-            AudioFile lvAf = new AudioFile("test", "test", "test", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf = new AudioFile("test", "test", "test", "");
             lvPlaylist.Songs.Add(lvAf);
-            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "", 0, TimeSpan.FromMinutes(1));
+            AudioFile lvAf2 = new AudioFile("test2", "test2", "test2", "");
             lvPlaylist.Songs.Add(lvAf2);
             lvPlaylist.Songs.Add(null);
-            lvPlaylist = StaticClass.FixPlaylist(lvPlaylist);
+            lvPlaylist.FixPlaylist();
             Assert.AreEqual(2, lvPlaylist.Songs.Count);
         }
 

@@ -44,21 +44,26 @@ namespace Dragon_Audio_Player
             InitializeComponent();
             tbarPlaying.MouseWheel += doNothing_MouseWheel;
             _audioPlayer = new DrgnAudioPlayer();
-            _audioPlayer.LoadPlaylists();
+            _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
             foreach (string lvS in _audioPlayer.GetPlaylistNames())
                 cbxmiPlaylistSelect.Items.Add(lvS);
             LoadUserInterface();
             LoadFromSettings();
             RefreshDataGrid();
+            this.Cursor = Cursors.Default;
         }
 
         private void LoadUserInterface()
         {
+            micbxPrefencesPlayingModes.Items.Clear();
             micbxPrefencesPlayingModes.Items.AddRange(Enum.GetNames(typeof(DrgnAudioPlayer.EPlayingMode)));
+            cbxmiPlaylistSelect.Items.Clear();
+            cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
         }
         private void LoadFromSettings()
         {
@@ -71,10 +76,11 @@ namespace Dragon_Audio_Player
                 _audioPlayer.ChangeVolume(tbarVolume.Value);
                 if (Settings.Default.PlayingMode == "")
                     // G = text / value
-                    micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(DrgnAudioPlayer.EPlayingMode.Smart.ToString("G"));
+                    micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(DrgnAudioPlayer.EPlayingMode.smart.ToString("G"));
                 else
                     micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(Settings.Default.PlayingMode);
                 cbxmiPlaylistSelect.SelectedIndex = cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
+
                 _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
             }
             catch (Exception lvEx)
@@ -82,7 +88,7 @@ namespace Dragon_Audio_Player
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _audioPlayer.SavePlaylists();
+            _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
             SetSettings();
             Settings.Default.Save();
             _audioPlayer.Dispose();
@@ -126,13 +132,16 @@ namespace Dragon_Audio_Player
 
         private void RefreshDataGrid()
         {
+            this.Cursor = Cursors.WaitCursor;
             dgridSongs.Rows.Clear();
             foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
             {
                 dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString, lvAf.TimesPlayed, lvAf.FileLocation);
             }
+
+            this.Cursor = Cursors.Default;
         }
-        private void UpdateDataGrid(AudioFile pAf)
+        private void UpdateDataGridTimesPlayed(AudioFile pAf)
         {
             try
             {
@@ -145,9 +154,28 @@ namespace Dragon_Audio_Player
             catch (Exception lvEx)
             { MessageBox.Show("Error trying to update DataGrid:\n" + lvEx.Message, "Update error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
-        private void AddAudioToGrid(AudioFile pAf)
+        private void AddRowToGrid(AudioFile pAf)
         {
             dgridSongs.Rows.Add(pAf.Title, pAf.Artist, pAf.Album, pAf.Year, pAf.DurationString, pAf.TimesPlayed, pAf.FileLocation);
+        }
+
+        private void dgridSongs_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (dgridSongs.SelectedRows.Count > 0 && DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this file(s)",
+                    "Delete file(s)?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information))
+                {
+                    foreach (DataGridViewRow lvRow in dgridSongs.SelectedRows)
+                    {
+                        var lvArtist = lvRow.Cells[1].Value.ToString();
+                        var lvTitle = lvRow.Cells[0].Value.ToString();
+                        AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                        _audioPlayer.DeleteSongFromPlaylist(lvAf);
+                        dgridSongs.Rows.Remove(lvRow);
+                    }
+                }
+            }
         }
 
 
@@ -158,15 +186,21 @@ namespace Dragon_Audio_Player
 
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
+            string lvSkipped = String.Empty;
             FolderBrowserDialog lvFbd = new FolderBrowserDialog { Description = "Select a folder containing audio files" };
             if (DialogResult.OK == lvFbd.ShowDialog())
             {
-                _audioPlayer.AddFolder(lvFbd.SelectedPath);
+                this.Cursor = Cursors.WaitCursor;
+                lvSkipped = _audioPlayer.CurrentPlaylist.AddFolder(lvFbd.SelectedPath);
                 RefreshDataGrid();
+                this.Cursor = Cursors.Default;
             }
+            if (lvSkipped != String.Empty)
+                MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void miFileAddFiles_Click(object sender, EventArgs e)
         {
+            string lvSkipped = String.Empty;
             OpenFileDialog lvOfd = new OpenFileDialog
             {
                 Title = "Select one or more audio files",
@@ -176,12 +210,18 @@ namespace Dragon_Audio_Player
             };
             if (DialogResult.OK == lvOfd.ShowDialog())
             {
+                this.Cursor = Cursors.WaitCursor;
                 foreach (string lvS in lvOfd.FileNames)
                 {
-                    _audioPlayer.AddFile(lvS, true);
-                    AddAudioToGrid(_audioPlayer.LastAudioFile);
+                    string lvResult = _audioPlayer.CurrentPlaylist.AddFile(lvS, true);
+                    if (lvResult != String.Empty)
+                        lvSkipped += lvResult + "\n";
+                    AddRowToGrid(_audioPlayer.LastAudioFile);
                 }
+                this.Cursor = Cursors.Default;
             }
+            if (lvSkipped != String.Empty)
+                MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void miFileExit_Click(object sender, EventArgs e)
         {
@@ -204,14 +244,14 @@ namespace Dragon_Audio_Player
         {
             _audioPlayer.SetPlayingMode(micbxPrefencesPlayingModes.Text);
         }
-        
+
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
         {
             if (tbxmiPlaylistNew.Text == "")
                 MessageBox.Show("Please enter a playlist name.", "Playlist name", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
             {
-
+                // TODO: create new playlist.
             }
         }
         private void cbxmiPlaylistSelect_Click(object sender, EventArgs e)
@@ -237,7 +277,12 @@ namespace Dragon_Audio_Player
                     timer1s.Start();
             }
             else if (dgridSongs.SelectedRows.Count == 1)
-                Play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
+            {
+                string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
+                string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
+                AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                Play(lvAf.ToString());
+            }
             else
                 PlayNext();
         }
@@ -258,6 +303,16 @@ namespace Dragon_Audio_Player
             PlayNext();
         }
 
+        private void miPlaylistSavePlaylists_Click(object sender, EventArgs e)
+        {
+            _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+        }
+
+        private void miPlaylistLoadPlaylists_Click(object sender, EventArgs e)
+        {
+            _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+            RefreshDataGrid();
+        }
 
 
 
@@ -325,7 +380,7 @@ namespace Dragon_Audio_Player
         }
         private void Play(string pString)
         {
-            _audioPlayer.Play(_audioPlayer.GetFileByString(pString));
+            _audioPlayer.Play(_audioPlayer.CurrentPlaylist.GetSongByString(pString));
             tbarPlaying.Value = 0;
             ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
             AfterPlay();
@@ -394,7 +449,12 @@ namespace Dragon_Audio_Player
         {
             if (e.RowIndex > -1)
                 if (dgridSongs.SelectedRows.Count == 1)
-                    Play(dgridSongs.SelectedRows[0].Cells[1].Value + " - " + dgridSongs.SelectedRows[0].Cells[0].Value);
+                {
+                    string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
+                    string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
+                    AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                    Play(lvAf.ToString());
+                }
         }
 
         private void timer1s_Tick(object sender, EventArgs e)
@@ -408,7 +468,7 @@ namespace Dragon_Audio_Player
                 {
                     while (_audioPlayer.FinishedSongs.Count > 0)
                     {
-                        UpdateDataGrid(_audioPlayer.FinishedSongs[0]);
+                        UpdateDataGridTimesPlayed(_audioPlayer.FinishedSongs[0]);
                         _audioPlayer.FinishedSongs.RemoveAt(0);
                     }
                 }
@@ -464,6 +524,17 @@ namespace Dragon_Audio_Player
                 _audioPlayer.Dispose();
             base.Dispose(disposing);
         }
+
+        private void miPlaylistResetTimesPlayed_Click(object sender, EventArgs e)
+        {
+            _audioPlayer.CurrentPlaylist.ResetTimesPlayed();
+            RefreshDataGrid();
+        }
+
+
+
+
+
 
 
 
