@@ -37,33 +37,66 @@ namespace Dragon_Audio_Player
         private PlaybackState PlayState { get { return _audioPlayer.PlayingState; } }
 
 
-        #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
-
         public MainForm()
         {
-            InitializeComponent();
-            tbarPlaying.MouseWheel += doNothing_MouseWheel;
-            _audioPlayer = new DrgnAudioPlayer();
-            _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+            try
+            {
+                InitializeComponent();
+                tbarPlaying.MouseWheel += doNothing_MouseWheel;
+                _audioPlayer = new DrgnAudioPlayer();
+                _audioPlayer.OnNewSong += delegate
+                {
+                    ChangeTitleSong(_audioPlayer.CurrentlyPlaying); 
+                };
+                _audioPlayer.OnTimesPlayedIncrease += delegate(object pSender, AudioFile pFile)
+                {
+                    UpdateDataGridTimesPlayed(pFile);
+                };
+
+                _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
+        #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Cursor = Cursors.WaitCursor;
-            foreach (string lvS in _audioPlayer.GetPlaylistNames())
-                cbxmiPlaylistSelect.Items.Add(lvS);
-            LoadUserInterface();
-            LoadFromSettings();
-            RefreshDataGrid();
-            this.Cursor = Cursors.Default;
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+                foreach (string lvS in _audioPlayer.GetPlaylistNames())
+                    cbxmiPlaylistSelect.Items.Add(lvS);
+                LoadUserInterface();
+                LoadFromSettings();
+                RefreshDataGrid();
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LoadUserInterface()
         {
-            micbxPrefencesPlayingModes.Items.Clear();
-            micbxPrefencesPlayingModes.Items.AddRange(Enum.GetNames(typeof(DrgnAudioPlayer.EPlayingMode)));
-            cbxmiPlaylistSelect.Items.Clear();
-            cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
+            try
+            {
+                micbxPrefencesPlayingModes.Items.Clear();
+                micbxPrefencesPlayingModes.Items.AddRange(Enum.GetNames(typeof(DrgnAudioPlayer.EPlayingMode)));
+                cbxmiPlaylistSelect.Items.Clear();
+                cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void LoadFromSettings()
         {
@@ -88,10 +121,18 @@ namespace Dragon_Audio_Player
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
-            SetSettings();
-            Settings.Default.Save();
-            _audioPlayer.Dispose();
+            try
+            {
+                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+                SetSettings();
+                Settings.Default.Save();
+                _audioPlayer.Dispose();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void SetSettings()
         {
@@ -124,22 +165,38 @@ namespace Dragon_Audio_Player
         }
         private void ChangeTitle(string pText)
         {
-            if (pText != "")
-                this.Text = String.Format("{0} - ][ {1} ][", pText, AppInfo.AssemblyTitle);
-            else
-                this.Text = AppInfo.AssemblyTitle;
+            try
+            {
+                if (pText != "")
+                    this.Text = String.Format("{0} - ][ {1} ][", pText, AppInfo.AssemblyTitle);
+                else
+                    this.Text = AppInfo.AssemblyTitle;
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void RefreshDataGrid()
         {
-            this.Cursor = Cursors.WaitCursor;
-            dgridSongs.Rows.Clear();
-            foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
+            try
             {
-                dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString, lvAf.TimesPlayed, lvAf.FileLocation);
-            }
+                this.Cursor = Cursors.WaitCursor;
+                dgridSongs.Rows.Clear();
+                foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
+                {
+                    dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString, lvAf.TimesPlayed, lvAf.FileLocation);
+                }
 
-            this.Cursor = Cursors.Default;
+                this.Cursor = Cursors.Default;
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void UpdateDataGridTimesPlayed(AudioFile pAf)
         {
@@ -156,25 +213,41 @@ namespace Dragon_Audio_Player
         }
         private void AddRowToGrid(AudioFile pAf)
         {
-            dgridSongs.Rows.Add(pAf.Title, pAf.Artist, pAf.Album, pAf.Year, pAf.DurationString, pAf.TimesPlayed, pAf.FileLocation);
+            try
+            {
+                dgridSongs.Rows.Add(pAf.Title, pAf.Artist, pAf.Album, pAf.Year, pAf.DurationString, pAf.TimesPlayed, pAf.FileLocation);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void dgridSongs_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
+            try
             {
-                if (dgridSongs.SelectedRows.Count > 0 && DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this file(s)",
-                    "Delete file(s)?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information))
+                if (e.KeyCode == Keys.Delete)
                 {
-                    foreach (DataGridViewRow lvRow in dgridSongs.SelectedRows)
+                    if (dgridSongs.SelectedRows.Count > 0 && DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this file(s)",
+                        "Delete file(s)?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information))
                     {
-                        var lvArtist = lvRow.Cells[1].Value.ToString();
-                        var lvTitle = lvRow.Cells[0].Value.ToString();
-                        AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
-                        _audioPlayer.DeleteSongFromPlaylist(lvAf);
-                        dgridSongs.Rows.Remove(lvRow);
+                        foreach (DataGridViewRow lvRow in dgridSongs.SelectedRows)
+                        {
+                            var lvArtist = lvRow.Cells[1].Value.ToString();
+                            var lvTitle = lvRow.Cells[0].Value.ToString();
+                            AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                            _audioPlayer.DeleteSongFromPlaylist(lvAf);
+                            dgridSongs.Rows.Remove(lvRow);
+                        }
                     }
                 }
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -186,132 +259,261 @@ namespace Dragon_Audio_Player
 
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
-            string lvSkipped = String.Empty;
-            FolderBrowserDialog lvFbd = new FolderBrowserDialog { Description = "Select a folder containing audio files" };
-            if (DialogResult.OK == lvFbd.ShowDialog())
+            try
             {
-                this.Cursor = Cursors.WaitCursor;
-                lvSkipped = _audioPlayer.CurrentPlaylist.AddFolder(lvFbd.SelectedPath);
-                RefreshDataGrid();
-                this.Cursor = Cursors.Default;
+                string lvSkipped = String.Empty;
+                FolderBrowserDialog lvFbd = new FolderBrowserDialog { Description = "Select a folder containing audio files" };
+                if (DialogResult.OK == lvFbd.ShowDialog())
+                {
+                    this.Cursor = Cursors.WaitCursor;
+                    lvSkipped = _audioPlayer.CurrentPlaylist.AddFolder(lvFbd.SelectedPath);
+                    RefreshDataGrid();
+                    this.Cursor = Cursors.Default;
+                }
+                if (lvSkipped != String.Empty)
+                    MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
-            if (lvSkipped != String.Empty)
-                MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void miFileAddFiles_Click(object sender, EventArgs e)
         {
-            string lvSkipped = String.Empty;
-            OpenFileDialog lvOfd = new OpenFileDialog
+            try
             {
-                Title = "Select one or more audio files",
-                Multiselect = true,
-                Filter = ".mp3 file(*.mp3)|*.mp3|.wav file(*.wav)|*.wav|.aac file(*.aac)|*.aac"
-                         + "|.flac file(*.flac)|*.flac|.mp4 file(*.mp4)|*.mp4|.wma file(*.wma)|*.wma|All files(*.*)|*.*"
-            };
-            if (DialogResult.OK == lvOfd.ShowDialog())
-            {
-                this.Cursor = Cursors.WaitCursor;
-                foreach (string lvS in lvOfd.FileNames)
+                string lvSkipped = String.Empty;
+                OpenFileDialog lvOfd = new OpenFileDialog
                 {
-                    string lvResult = _audioPlayer.CurrentPlaylist.AddFile(lvS, true);
-                    if (lvResult != String.Empty)
-                        lvSkipped += lvResult + "\n";
-                    AddRowToGrid(_audioPlayer.LastAudioFile);
+                    Title = "Select one or more audio files",
+                    Multiselect = true,
+                    Filter = ".mp3 file(*.mp3)|*.mp3|.wav file(*.wav)|*.wav|.aac file(*.aac)|*.aac"
+                             + "|.flac file(*.flac)|*.flac|.mp4 file(*.mp4)|*.mp4|.wma file(*.wma)|*.wma|All files(*.*)|*.*"
+                };
+                if (DialogResult.OK == lvOfd.ShowDialog())
+                {
+                    this.Cursor = Cursors.WaitCursor;
+                    foreach (string lvS in lvOfd.FileNames)
+                    {
+                        string lvResult = _audioPlayer.CurrentPlaylist.AddFile(lvS, true);
+                        if (lvResult != String.Empty)
+                            lvSkipped += lvResult + "\n";
+                        AddRowToGrid(_audioPlayer.LastAudioFile);
+                    }
+                    this.Cursor = Cursors.Default;
                 }
-                this.Cursor = Cursors.Default;
+                if (lvSkipped != String.Empty)
+                    MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            if (lvSkipped != String.Empty)
-                MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void miFileExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            try
+            {
+                this.Close();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void cbmiPreferencesWriteToFile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.Default.WriteToFile = cbmiPreferencesWriteToFile.Text;
+            try
+            {
+                Settings.Default.WriteToFile = cbmiPreferencesWriteToFile.Text;
 
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void tbxmiPreferencesWTFLocation_TextChanged(object sender, EventArgs e)
         {
-            if (tbxmiPreferencesWTFLocation.Text.Length > 0)
-                cbmiPreferencesWriteToFile.Enabled = true;
-            else
-                cbmiPreferencesWriteToFile.Enabled = false;
+            try
+            {
+                if (tbxmiPreferencesWTFLocation.Text.Length > 0)
+                    cbmiPreferencesWriteToFile.Enabled = true;
+                else
+                    cbmiPreferencesWriteToFile.Enabled = false;
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void micbxPrefencesPlayingModes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _audioPlayer.SetPlayingMode(micbxPrefencesPlayingModes.Text);
+            try
+            {
+                _audioPlayer.SetPlayingMode(micbxPrefencesPlayingModes.Text);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
         {
-            if (tbxmiPlaylistNew.Text == "")
-                MessageBox.Show("Please enter a playlist name.", "Playlist name", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
+            try
             {
-                // TODO: create new playlist.
+                if (tbxmiPlaylistNew.Text == "")
+                    MessageBox.Show("Please enter a playlist name.", "Playlist name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                {
+                    // TODO: create new playlist.
+                }
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void cbxmiPlaylistSelect_Click(object sender, EventArgs e)
         {
-            if (cbxmiPlaylistSelect.Text != "")
-                _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+            try
+            {
+                if (cbxmiPlaylistSelect.Text != "")
+                    _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void miHelpAbout_Click(object sender, EventArgs e)
         {
-            DrgnAboutBox ab = new DrgnAboutBox();
-            ab.ShowDialog();
+            try
+            {
+                DrgnAboutBox ab = new DrgnAboutBox();
+                ab.ShowDialog();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
         private void miPlay_Click(object sender, EventArgs e)
         {
-            if (PlayState == PlaybackState.Paused)
+            try
             {
-                _audioPlayer.Play(null);
-                ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
-                if (!timer1s.Enabled)
-                    timer1s.Start();
+                if (PlayState == PlaybackState.Paused)
+                {
+                    _audioPlayer.Play(null);
+                    ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
+                    if (!timer1s.Enabled)
+                        timer1s.Start();
+                }
+                else if (dgridSongs.SelectedRows.Count == 1)
+                {
+                    string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
+                    string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
+                    AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                    Play(lvAf.ToString());
+                }
+                else
+                    PlayNext();
             }
-            else if (dgridSongs.SelectedRows.Count == 1)
+            catch (Exception lvEx)
             {
-                string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
-                string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
-                AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
-                Play(lvAf.ToString());
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else
-                PlayNext();
         }
         private void miStop_Click(object sender, EventArgs e)
         {
-            Stop();
+            try
+            {
+                Stop();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void miPause_Click(object sender, EventArgs e)
         {
-            Pause();
+            try
+            {
+                Pause();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void miPrevious_Click(object sender, EventArgs e)
         {
-            Previous();
+            try
+            {
+                Previous();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void miNext_Click(object sender, EventArgs e)
         {
-            PlayNext();
+            try
+            {
+                PlayNext();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void miPlaylistSavePlaylists_Click(object sender, EventArgs e)
         {
-            _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+            try
+            {
+                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void miPlaylistLoadPlaylists_Click(object sender, EventArgs e)
         {
-            _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
-            RefreshDataGrid();
+            try
+            {
+                _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+                RefreshDataGrid();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
@@ -344,24 +546,32 @@ namespace Dragon_Audio_Player
 
         private void tbarPlaying_ValueChanged(object sender, EventArgs e)
         {
-            if (_audioPlayer.CurrentlyPlaying != null)
+            try
             {
-                if (tbarPlaying.Value >= (int)_audioPlayer.CurrentlyPlaying.Duration.TotalSeconds)
-                    try
-                    { _audioPlayer.PlayNext(); }
-                    catch (Exception lvEx)
-                    {
-                        MessageBox.Show("Error trying to play next song:\n" + lvEx.Message, "Next song error",
-                          MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                else
+                if (_audioPlayer.CurrentlyPlaying != null)
                 {
-                    if (_mouseDown)
+                    if (tbarPlaying.Value >= (int)_audioPlayer.CurrentlyPlaying.Duration.TotalSeconds)
+                        try
+                        { _audioPlayer.PlayNext(); }
+                        catch (Exception lvEx)
+                        {
+                            MessageBox.Show("Error trying to play next song:\n" + lvEx.Message, "Next song error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    else
                     {
-                        long lvSeekValue = (long)TimeSpan.FromSeconds(tbarPlaying.Value).TotalMilliseconds;
-                        Seek(lvSeekValue);
+                        if (_mouseDown)
+                        {
+                            long lvSeekValue = (long)TimeSpan.FromSeconds(tbarPlaying.Value).TotalMilliseconds;
+                            Seek(lvSeekValue);
+                        }
                     }
                 }
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void doNothing_MouseWheel(object sender, EventArgs e)
@@ -376,14 +586,30 @@ namespace Dragon_Audio_Player
 
         private void tbarVolume_ValueChanged(object sender, EventArgs e)
         {
-            _audioPlayer.ChangeVolume(tbarVolume.Value);
+            try
+            {
+                _audioPlayer.ChangeVolume(tbarVolume.Value);
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void Play(string pString)
         {
-            _audioPlayer.Play(_audioPlayer.CurrentPlaylist.GetSongByString(pString));
-            tbarPlaying.Value = 0;
-            ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
-            AfterPlay();
+            try
+            {
+                _audioPlayer.Play(_audioPlayer.CurrentPlaylist.GetSongByString(pString));
+                tbarPlaying.Value = 0;
+                ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
+                AfterPlay();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void PlayNext()
         {
@@ -421,9 +647,17 @@ namespace Dragon_Audio_Player
         }
         private void Pause()
         {
-            _audioPlayer.Pause();
-            ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
-            timer1s.Stop();
+            try
+            {
+                _audioPlayer.Pause();
+                ChangeTitleSong(_audioPlayer.CurrentlyPlaying);
+                timer1s.Stop();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void Seek(long pMilliseconds)
         {
@@ -437,7 +671,15 @@ namespace Dragon_Audio_Player
         }
         private void Previous()
         {
-
+            try
+            {
+                _audioPlayer.Previous();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #endregion
@@ -447,14 +689,22 @@ namespace Dragon_Audio_Player
 
         private void dgridSongs_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex > -1)
-                if (dgridSongs.SelectedRows.Count == 1)
-                {
-                    string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
-                    string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
-                    AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
-                    Play(lvAf.ToString());
-                }
+            try
+            {
+                if (e.RowIndex > -1)
+                    if (dgridSongs.SelectedRows.Count == 1)
+                    {
+                        string lvArtist = dgridSongs.SelectedRows[0].Cells[1].Value.ToString();
+                        string lvTitle = dgridSongs.SelectedRows[0].Cells[0].Value.ToString();
+                        AudioFile lvAf = _audioPlayer.CurrentPlaylist.GetSongByArtistTitle(lvArtist, lvTitle);
+                        Play(lvAf.ToString());
+                    }
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void timer1s_Tick(object sender, EventArgs e)
@@ -464,14 +714,6 @@ namespace Dragon_Audio_Player
                 tbarPlaying.Maximum = Convert.ToInt32(Math.Ceiling((double)_audioPlayer.CurrentlyPlaying.Duration.TotalSeconds));
                 int lvSec = Convert.ToInt32(Math.Round(_audioPlayer.CurrentTime.TotalSeconds));
                 tbarPlaying.Value = lvSec;
-                if (_audioPlayer.FinishedSongs.Count > 0)
-                {
-                    while (_audioPlayer.FinishedSongs.Count > 0)
-                    {
-                        UpdateDataGridTimesPlayed(_audioPlayer.FinishedSongs[0]);
-                        _audioPlayer.FinishedSongs.RemoveAt(0);
-                    }
-                }
                 if (cbmiPreferencesWriteToFile.SelectedIndex == cbmiPreferencesWriteToFile.Items.IndexOf("Every second")
                    && tbxmiPreferencesWTFLocation.Text != "")
                     WriteSongInfo();

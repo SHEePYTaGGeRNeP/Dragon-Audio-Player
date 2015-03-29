@@ -19,6 +19,7 @@ namespace Dragon_Audio_Player.Classes
         public List<AudioFile> Songs { get; set; }
         public string Name { get; set; }
 
+
         public Playlist(string pName)
         {
             Songs = new List<AudioFile>();

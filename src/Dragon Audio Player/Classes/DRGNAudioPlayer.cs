@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using NAudio.Wave;
 
 namespace Dragon_Audio_Player.Classes
@@ -35,7 +36,14 @@ namespace Dragon_Audio_Player.Classes
         {
             get { return Path.Combine(StaticClass.AppDataFolder, "Playlists.txt"); }
         }
-        
+
+        public delegate void NewSongHandler(object sender, EventArgs e);
+        // Fired when a new song is played
+        public event NewSongHandler OnNewSong;
+
+        public delegate void TimesPlayedIncreaseHandler(object sender, AudioFile pFile);
+        // Fired when PlayNext is called
+        public event TimesPlayedIncreaseHandler OnTimesPlayedIncrease;
 
         public EPlayingMode PlayingMode { get; private set; }
         private IWavePlayer _waveOutDevice;
@@ -53,8 +61,10 @@ namespace Dragon_Audio_Player.Classes
         public float Volume { get { return _waveOutDevice.Volume; } }
 
 
-        // for previous song
-        public List<AudioFile> FinishedSongs { get; private set; }
+        /// <summary>
+        /// FileLocation
+        /// </summary>
+        public Stack<string> PreviouslyPlayedSongs { get; private set; }
 
 
 
@@ -73,7 +83,7 @@ namespace Dragon_Audio_Player.Classes
             _waveOutDevice = new WaveOut();
             _waveOutDevice.PlaybackStopped += PlayBackEnds;
             Playlists = new List<Playlist>();
-            FinishedSongs = new List<AudioFile>();
+            PreviouslyPlayedSongs = new Stack<string>();
             Playlists.Add(new Playlist("All"));
             CurrentPlaylist = Playlists[0];
         }
@@ -96,7 +106,7 @@ namespace Dragon_Audio_Player.Classes
         }
 
 
-        
+
 
         #region >< >< >< >< >< >< >< >< >< ><  P L A Y   N E X T  >< >< >< >< >< >< >< ><
         public void PlayNext()
@@ -104,7 +114,8 @@ namespace Dragon_Audio_Player.Classes
             if (CurrentlyPlaying != null)
             {
                 CurrentlyPlaying.TimesPlayed++;
-                FinishedSongs.Add(CurrentlyPlaying);
+                if (OnTimesPlayedIncrease != null)
+                    OnTimesPlayedIncrease.Invoke(this,CurrentlyPlaying);
             }
             switch (PlayingMode)
             {
@@ -160,6 +171,7 @@ namespace Dragon_Audio_Player.Classes
                 PlayNext();
         }
 
+
         #endregion
 
 
@@ -172,14 +184,14 @@ namespace Dragon_Audio_Player.Classes
                 if (pFile != null)
                 {
                     if (PlayingState == PlaybackState.Playing)
-                        if (CurrentlyPlaying.FileLocation != pFile.FileLocation)
+                        if (CurrentlyPlaying != pFile)
                             Stop();
                         else
                         {
                             Pause();
                             return;
                         }
-                    if (PlayingState != PlaybackState.Paused)
+                    if (PlayingState != PlaybackState.Paused || pFile != CurrentlyPlaying)
                     {
                         _mediaFoundationReader = new MediaFoundationReader(pFile.FileLocation);
                         WaveChannel32 lvWc = new WaveChannel32(_mediaFoundationReader) { PadWithZeroes = false };
@@ -189,6 +201,9 @@ namespace Dragon_Audio_Player.Classes
                     }
                     _waveOutDevice.Play();
                     CurrentlyPlaying = pFile;
+                    if (OnNewSong != null)
+                        OnNewSong.Invoke(this, new EventArgs());
+                    PreviouslyPlayedSongs.Push(CurrentlyPlaying.FileLocation);
                 }
                 else if (PlayingState == PlaybackState.Paused && CurrentlyPlaying != null)
                     _waveOutDevice.Play();
@@ -226,6 +241,18 @@ namespace Dragon_Audio_Player.Classes
             else
                 throw new ArgumentNullException("MediaFoundationReader is null");
         }
+        public void Previous()
+        {
+            if (PreviouslyPlayedSongs.Count > 1)
+            {
+                // Pop the currently playing song
+                PreviouslyPlayedSongs.Pop();
+                // Pop the previous played song
+                string lvNewSong = PreviouslyPlayedSongs.Pop();
+                AudioFile lvAf = CurrentPlaylist.GetSongByPath(lvNewSong);
+                Play(lvAf);
+            }
+        }
 
         #endregion
 
@@ -258,16 +285,16 @@ namespace Dragon_Audio_Player.Classes
         }
         public void LoadPlaylists(string pFileLocation)
         {
-            if (File.Exists(PlaylistFileName))
+            if (File.Exists(pFileLocation))
             {
                 try
-                { StaticClass.JsonToPlaylistsList(File.ReadAllText(PlaylistFileName)); }
+                { StaticClass.JsonToPlaylistsList(File.ReadAllText(pFileLocation)); }
                 catch
                 {
                     // file is empty
                     return;
                 }
-                Playlists = StaticClass.JsonToPlaylistsList(File.ReadAllText(PlaylistFileName));
+                Playlists = StaticClass.JsonToPlaylistsList(File.ReadAllText(pFileLocation));
                 if (Playlists.Count > 0)
                     CurrentPlaylist = Playlists[0];
             }
@@ -316,4 +343,5 @@ namespace Dragon_Audio_Player.Classes
             disposed = true;
         }
     }
+
 }

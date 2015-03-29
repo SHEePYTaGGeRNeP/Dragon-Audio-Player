@@ -86,6 +86,21 @@ namespace UnitTestProject.Classes
         }
 
         [TestMethod]
+        public void TestPrevious()
+        {
+            TestPlay();
+            AudioFile lvAf2 = new AudioFile(_AUDIO_1_PATH, "test2", "test2", "test");
+            _audioPlayer.CurrentPlaylist.Songs.Add(lvAf2);
+            _audioPlayer.Play(lvAf2);
+            Assert.AreEqual(lvAf2, _audioPlayer.CurrentlyPlaying);
+            _audioPlayer.Stop();
+            _audioPlayer.Previous();
+            _audioPlayer.Pause();
+            Assert.AreEqual("test",_audioPlayer.CurrentlyPlaying.Title);
+            _audioPlayer.Stop();
+            _audioPlayer.Dispose();
+        }
+        [TestMethod]
         public void TestGetPlaylist()
         {
             Playlist lvPlaylist = new Playlist("test1");
