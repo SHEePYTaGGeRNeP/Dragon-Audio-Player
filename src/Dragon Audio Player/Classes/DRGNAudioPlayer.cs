@@ -30,7 +30,10 @@ namespace Dragon_Audio_Player.Classes
 
         /// TODO: https://docs.google.com/spreadsheets/d/1EPZA_mqK9Kh4qKLxEZsnqQuB8pNJWqQjR6zO2HlAzXQ/
 
+        // ReSharper disable InconsistentNaming
+        // Lowercase because of comparing with string
         public enum EPlayingMode { smart, random, normal };
+        // ReSharper restore InconsistentNaming
 
         public static string PlaylistFileName
         {
@@ -50,7 +53,7 @@ namespace Dragon_Audio_Player.Classes
         private MediaFoundationReader _mediaFoundationReader;
 
 
-        private bool disposed = false;
+        private bool _disposed;
 
         public List<Playlist> Playlists { get; private set; }
         public Playlist CurrentPlaylist { get; private set; }
@@ -72,8 +75,8 @@ namespace Dragon_Audio_Player.Classes
         {
             get
             {
-                if (Playlists[0].Songs.Count > 0)
-                    return Playlists[0].Songs[Playlists[0].Songs.Count - 1];
+                if (CurrentPlaylist != null && CurrentPlaylist.Songs.Count > 0)
+                    return CurrentPlaylist.Songs[CurrentPlaylist.Songs.Count - 1];
                 return null;
             }
         }
@@ -115,7 +118,7 @@ namespace Dragon_Audio_Player.Classes
             {
                 CurrentlyPlaying.TimesPlayed++;
                 if (OnTimesPlayedIncrease != null)
-                    OnTimesPlayedIncrease.Invoke(this,CurrentlyPlaying);
+                    OnTimesPlayedIncrease.Invoke(this, CurrentlyPlaying);
             }
             switch (PlayingMode)
             {
@@ -321,7 +324,7 @@ namespace Dragon_Audio_Player.Classes
         }
         protected virtual void Dispose(bool pDisposing)
         {
-            if (!this.disposed)
+            if (!this._disposed)
             {
                 if (pDisposing)
                 {
@@ -340,7 +343,7 @@ namespace Dragon_Audio_Player.Classes
                 }
                 // No unmanaged resources to release otherwise they'd go here.
             }
-            disposed = true;
+            this._disposed = true;
         }
     }
 

@@ -57,13 +57,14 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
 
+        // ReSharper disable once InconsistentNaming
         private void Form1_Load(object sender, EventArgs e)
         {
             try
@@ -78,7 +79,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -94,7 +95,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -108,7 +109,7 @@ namespace Dragon_Audio_Player
                 //tbarVolume.Refresh();
                 _audioPlayer.ChangeVolume(tbarVolume.Value);
                 if (Settings.Default.PlayingMode == "")
-                    // G = text / value
+                    // G = Displays the enumeration entry as a string value.
                     micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(DrgnAudioPlayer.EPlayingMode.smart.ToString("G"));
                 else
                     micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(Settings.Default.PlayingMode);
@@ -118,21 +119,6 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             { MessageBox.Show("Error trying to load settings:\n" + lvEx.Message, "Loading error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-        }
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            try
-            {
-                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
-                SetSettings();
-                Settings.Default.Save();
-                _audioPlayer.Dispose();
-            }
-            catch (Exception lvEx)
-            {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
         private void SetSettings()
         {
@@ -174,7 +160,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -194,7 +180,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -219,11 +205,27 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // ReSharper disable InconsistentNaming
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+                SetSettings();
+                Settings.Default.Save();
+                _audioPlayer.Dispose();
+            }
+            catch (Exception lvEx)
+            {
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void dgridSongs_KeyDown(object sender, KeyEventArgs e)
         {
             try
@@ -246,17 +248,18 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // ReSharper restore InconsistentNaming
 
 
         #endregion
 
         #region >< >< >< >< >< >< >< >< >< ><  M E N U   I T E M S  >< >< >< >< >< >< >< ><
 
+        // ReSharper disable InconsistentNaming
         private void miFileAddFolder_Click(object sender, EventArgs e)
         {
             try
@@ -276,7 +279,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -309,7 +312,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -321,7 +324,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -335,7 +338,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -350,7 +353,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -362,7 +365,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -380,7 +383,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -393,7 +396,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -407,7 +410,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -436,7 +439,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -448,7 +451,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -460,7 +463,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -472,7 +475,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -484,7 +487,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -497,7 +500,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -511,11 +514,11 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        // ReSharper restore InconsistentNaming
 
 
         #endregion
@@ -570,7 +573,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -592,7 +595,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -607,7 +610,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -655,7 +658,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -677,7 +680,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -702,7 +705,7 @@ namespace Dragon_Audio_Player
             }
             catch (Exception lvEx)
             {
-                MessageBox.Show("An unexpected error occurd:\n" + lvEx.Message, "Unexpected error",
+                MessageBox.Show("An unexpected error occurred:\n" + lvEx.Message, "Unexpected error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
