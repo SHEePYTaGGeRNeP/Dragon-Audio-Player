@@ -28,13 +28,12 @@ namespace UnitTestProject.Classes
         //      ---------------------------------------------
 
 
-        private static DrgnAudioPlayer _audioPlayer;
+        private DrgnAudioPlayer _audioPlayer;
         // PROBABLY NEEDS TO BE CHANGED.
-        private  string _AUDIO_1_PATH = @"E:\GITHUB\Dragon-Audio-Player\src\UnitTestProject\bin\Debug\AudioTestFiles\audio1.mp3";
-
+        private const string _AUDIO_1_PATH = @"E:\GITHUB\Dragon-Audio-Player\src\UnitTestProject\bin\Debug\AudioTestFiles\audio1.mp3";
 
         // Use TestInitialize to run code before running each test 
-        [TestInitialize()]
+        [TestInitialize]
         public void TestsInitialize()
         {
             _audioPlayer = new DrgnAudioPlayer();

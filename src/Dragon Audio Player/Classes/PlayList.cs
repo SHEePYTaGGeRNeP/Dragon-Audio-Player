@@ -64,12 +64,7 @@ namespace Dragon_Audio_Player.Classes
         {
             try
             {
-                List<AudioFile> lvList = new List<AudioFile>();
-                foreach (AudioFile lvAf in Songs)
-                {
-                    if (lvAf == null || lvAf.FileLocation == null)
-                        lvList.Add(lvAf);
-                }
+                List<AudioFile> lvList = this.Songs.Where(lvAf => lvAf == null || lvAf.FileLocation == null).ToList();
                 foreach (AudioFile lvAf in lvList)
                     Songs.Remove(lvAf);
             }
@@ -90,13 +85,11 @@ namespace Dragon_Audio_Player.Classes
             string[] lvFiles = Directory.GetFiles(pPath);
             foreach (string lvS in lvFiles)
             {
-                string lvExt = Path.GetExtension(lvS).ToLower();
-                if (StaticClass.AudioFileTypes.Contains(lvExt))
-                {
-                    string lvResult = AddFile(lvS, false);
-                    if (lvResult != String.Empty)
-                        lvReturn += lvResult + "\n";
-                }
+                string lvExt = Path.GetExtension(lvS.ToLower());
+                if (!StaticClass.AudioFileTypes.Contains(lvExt)) continue;
+                string lvResult = this.AddFile(lvS, false);
+                if (lvResult != String.Empty)
+                    lvReturn += lvResult + "\n";
             }
             return lvReturn;
         }
