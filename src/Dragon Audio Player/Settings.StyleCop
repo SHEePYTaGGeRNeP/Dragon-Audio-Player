@@ -165,7 +165,7 @@
       </Rules>
       <AnalyzerSettings>
         <StringProperty Name="CompanyName">DoubleDutch Dragons</StringProperty>
-        <StringProperty Name="Copyright">© 2014 DoubleDutch Dragons</StringProperty>
+        <StringProperty Name="Copyright">© 2015 DoubleDutch Dragons</StringProperty>
       </AnalyzerSettings>
     </Analyzer>
     <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">

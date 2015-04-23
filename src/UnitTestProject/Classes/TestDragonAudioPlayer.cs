@@ -1,10 +1,21 @@
-﻿using System;
-using System.IO;
-using Dragon_Audio_Player.Classes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TestDragonAudioPlayer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the TestDragonAudioPlayer type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace UnitTestProject.Classes
 {
+    using System;
+    using System.IO;
+
+    using Dragon_Audio_Player.Classes;
+
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class TestDragonAudioPlayer
     {
