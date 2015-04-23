@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -98,6 +99,6 @@
     <TestResultsFolderPath>..\TestResults</TestResultsFolderPath>
   </PropertyGroup>
   <Target Name="AfterClean">
-  	<RemoveDir Directories="$(TestResultsFolderPath)" Condition="Exists('$(TestResultsFolderPath)')" />
+    <RemoveDir Directories="$(TestResultsFolderPath)" Condition="Exists('$(TestResultsFolderPath)')" />
   </Target>
 </Project>
