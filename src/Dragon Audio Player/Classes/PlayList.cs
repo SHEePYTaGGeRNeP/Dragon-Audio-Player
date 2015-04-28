@@ -17,14 +17,17 @@ namespace Dragon_Audio_Player.Classes
         //      ---------------------------------------------
 
         public List<AudioFile> Songs { get; set; }
+        public List<String> Folders { get; set; }
         public string Name { get; set; }
 
 
         public Playlist(string pName)
         {
             Songs = new List<AudioFile>();
+            Folders = new List<string>();
             Name = pName;
         }
+
 
         public AudioFile GetLastAddedSong()
         {
@@ -60,13 +63,36 @@ namespace Dragon_Audio_Player.Classes
             return Songs.Find(pAf => String.Equals(pAf.FileLocation, pPath, StringComparison.CurrentCultureIgnoreCase));
         }
 
-        public void FixPlaylist()
+        /// <summary>
+        ///  Returns empty when no files have been removed
+        /// </summary>
+        /// <returns></returns>
+        public string FixPlaylist()
         {
             try
             {
-                List<AudioFile> lvList = this.Songs.Where(lvAf => lvAf == null || lvAf.FileLocation == null).ToList();
+                string lvReturnMessage = String.Empty;
+                List<AudioFile> lvList = this.Songs.Where(pAf => pAf == null || pAf.FileLocation == null
+                    || System.IO.File.Exists(pAf.FileLocation) == false).ToList();
                 foreach (AudioFile lvAf in lvList)
+                {
                     Songs.Remove(lvAf);
+                    if (lvAf != null)
+                        lvReturnMessage += String.Format("Playlist: {0} Removed: {1}\n", Name, lvAf.ToString());
+                }
+                foreach (string lvFolder in Folders)
+                {
+                    if (Directory.Exists(lvFolder))
+                    {
+                        foreach (string lvFile in Directory.GetFiles(lvFolder))
+                        {
+                            // Empty = successfully added
+                            if (AddFile(lvFile, false) == String.Empty)
+                                lvReturnMessage += String.Format("Playlist: {0} Added: {1}\n", Name, lvFile);
+                        }
+                    }
+                }
+                return lvReturnMessage;
             }
             catch (Exception lvEx)
             {
@@ -91,11 +117,12 @@ namespace Dragon_Audio_Player.Classes
                 if (lvResult != String.Empty)
                     lvReturn += lvResult + "\n";
             }
+            Folders.Add(pPath);
             return lvReturn;
         }
 
         /// <summary>
-        /// Add song to current playlist.
+        /// Add song to playlist.
         /// </summary>
         /// <param name="pFileLocation"></param>
         /// <param name="pAddIfExists"></param>

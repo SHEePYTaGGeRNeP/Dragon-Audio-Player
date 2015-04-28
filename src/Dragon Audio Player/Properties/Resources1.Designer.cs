@@ -60,7 +60,6 @@ namespace Dragon_Audio_Player.Properties {
             }
         }
         
-        
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete these file(s).
         /// </summary>
@@ -73,11 +72,18 @@ namespace Dragon_Audio_Player.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a folder containing audio files.
         /// </summary>
-        internal static string Click_Select_a_folder_containing_audio_files
-        {
-            get
-            {
+        internal static string Click_Select_a_folder_containing_audio_files {
+            get {
                 return ResourceManager.GetString("Click_Select_a_folder_containing_audio_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete current playlist?.
+        /// </summary>
+        internal static string Delete_current_playlist_ {
+            get {
+                return ResourceManager.GetString("Delete_current_playlist_", resourceCulture);
             }
         }
         
@@ -111,6 +117,16 @@ namespace Dragon_Audio_Player.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error trying to play next song:
+        ///.
+        /// </summary>
+        internal static string ErrorPlayingNextSong {
+            get {
+                return ResourceManager.GetString("ErrorPlayingNextSong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap logo {
@@ -126,6 +142,63 @@ namespace Dragon_Audio_Player.Properties {
         internal static string MainForm_LoadFromSettings_Loading_error {
             get {
                 return ResourceManager.GetString("MainForm_LoadFromSettings_Loading_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed playlists:
+        ///.
+        /// </summary>
+        internal static string MainForm_LoadPlaylists_ {
+            get {
+                return ResourceManager.GetString("MainForm_LoadPlaylists_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed playlists.
+        /// </summary>
+        internal static string MainForm_LoadPlaylists_Fixed_playlists {
+            get {
+                return ResourceManager.GetString("MainForm_LoadPlaylists_Fixed_playlists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed playlists:
+        ///.
+        /// </summary>
+        internal static string MainForm_LoadPlaylists_FixedPlaylistsColon {
+            get {
+                return ResourceManager.GetString("MainForm_LoadPlaylists_FixedPlaylistsColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error trying to Seek to value: .
+        /// </summary>
+        internal static string MainForm_Seek_Error_trying_to_Seek_to_value__ {
+            get {
+                return ResourceManager.GetString("MainForm_Seek_Error_trying_to_Seek_to_value__", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  milliseconds
+        ///.
+        /// </summary>
+        internal static string MainForm_Seek_Milliseconds {
+            get {
+                return ResourceManager.GetString("MainForm_Seek_Milliseconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seek error.
+        /// </summary>
+        internal static string MainForm_Seek_Seek_error {
+            get {
+                return ResourceManager.GetString("MainForm_Seek_Seek_error", resourceCulture);
             }
         }
         
@@ -157,11 +230,85 @@ namespace Dragon_Audio_Player.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error trying to stop audio:
+        ///.
+        /// </summary>
+        internal static string MainForm_Stop_ {
+            get {
+                return ResourceManager.GetString("MainForm_Stop_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next song error.
+        /// </summary>
+        internal static string MainForm_tbarPlaying_ValueChanged_Next_song_error {
+            get {
+                return ResourceManager.GetString("MainForm_tbarPlaying_ValueChanged_Next_song_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error trying to play next song:
+        ///.
+        /// </summary>
+        internal static string MainForm_tbarPlaying_ValueChanged_NextSongError {
+            get {
+                return ResourceManager.GetString("MainForm_tbarPlaying_ValueChanged_NextSongError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a playlist name..
+        /// </summary>
+        internal static string miPlaylistNewCreate_Please_enter_a_playlist_name_ {
+            get {
+                return ResourceManager.GetString("miPlaylistNewCreate_Please_enter_a_playlist_name_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New playlist created.
+        /// </summary>
+        internal static string New_playlist_created {
+            get {
+                return ResourceManager.GetString("New_playlist_created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stopped.
         /// </summary>
         internal static string PlayingStatus_Stopped {
             get {
                 return ResourceManager.GetString("PlayingStatus_Stopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  created!.
+        /// </summary>
+        internal static string Playlist_created {
+            get {
+                return ResourceManager.GetString("Playlist_created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playlist name.
+        /// </summary>
+        internal static string Playlist_name {
+            get {
+                return ResourceManager.GetString("Playlist_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playlist with this name already exists.
+        /// </summary>
+        internal static string Playlist_with_this_name_already_exists {
+            get {
+                return ResourceManager.GetString("Playlist_with_this_name_already_exists", resourceCulture);
             }
         }
         
@@ -172,6 +319,24 @@ namespace Dragon_Audio_Player.Properties {
             get {
                 object obj = ResourceManager.GetObject("Shield", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped files.
+        /// </summary>
+        internal static string Skipped_files {
+            get {
+                return ResourceManager.GetString("Skipped_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping error.
+        /// </summary>
+        internal static string Stopping_error {
+            get {
+                return ResourceManager.GetString("Stopping_error", resourceCulture);
             }
         }
         

@@ -12,7 +12,7 @@
       <Value Profile="(Default)">Smart Mode</Value>
     </Setting>
     <Setting Name="LastPlayinglist" Type="System.String" Scope="User">
-      <Value Profile="(Default)">All</Value>
+      <Value Profile="(Default)">All Songs</Value>
     </Setting>
     <Setting Name="SongOutLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

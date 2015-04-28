@@ -37,6 +37,7 @@
             this.cbxmiPlaylistSelect = new System.Windows.Forms.ToolStripComboBox();
             this.miPlaylistSavePlaylists = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistLoadPlaylists = new System.Windows.Forms.ToolStripMenuItem();
+            this.miPlaylistResetTimesPlayed = new System.Windows.Forms.ToolStripMenuItem();
             this.miPreferences = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cbmiPreferencesWriteToFile = new System.Windows.Forms.ToolStripComboBox();
@@ -62,7 +63,10 @@
             this.timer1s = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.miPlaylistResetTimesPlayed = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslblPlaylist = new System.Windows.Forms.ToolStripStatusLabel();
+            this.miPlaylistDeleteCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlPlaying.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarPlaying)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarVolume)).BeginInit();
@@ -186,6 +190,7 @@
             this.miPlaylist.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miPlaylistNew,
             this.miPlaylistSelect,
+            this.miPlaylistDeleteCurrent,
             this.miPlaylistSavePlaylists,
             this.miPlaylistLoadPlaylists,
             this.miPlaylistResetTimesPlayed});
@@ -201,7 +206,7 @@
             this.tbxmiPlaylistNew,
             this.miPlaylistNewCreate});
             this.miPlaylistNew.Name = "miPlaylistNew";
-            this.miPlaylistNew.Size = new System.Drawing.Size(175, 22);
+            this.miPlaylistNew.Size = new System.Drawing.Size(188, 22);
             this.miPlaylistNew.Text = "Create New";
             // 
             // tbxmiPlaylistNew
@@ -221,7 +226,7 @@
             this.miPlaylistSelect.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cbxmiPlaylistSelect});
             this.miPlaylistSelect.Name = "miPlaylistSelect";
-            this.miPlaylistSelect.Size = new System.Drawing.Size(175, 22);
+            this.miPlaylistSelect.Size = new System.Drawing.Size(188, 22);
             this.miPlaylistSelect.Text = "Select Playlist";
             // 
             // cbxmiPlaylistSelect
@@ -229,21 +234,30 @@
             this.cbxmiPlaylistSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxmiPlaylistSelect.Name = "cbxmiPlaylistSelect";
             this.cbxmiPlaylistSelect.Size = new System.Drawing.Size(121, 23);
-            this.cbxmiPlaylistSelect.Click += new System.EventHandler(this.cbxmiPlaylistSelect_Click);
+            this.cbxmiPlaylistSelect.SelectedIndexChanged += new System.EventHandler(this.cbxmiPlaylistSelect_SelectedIndexChanged);
             // 
             // miPlaylistSavePlaylists
             // 
             this.miPlaylistSavePlaylists.Name = "miPlaylistSavePlaylists";
-            this.miPlaylistSavePlaylists.Size = new System.Drawing.Size(175, 22);
+            this.miPlaylistSavePlaylists.Size = new System.Drawing.Size(188, 22);
             this.miPlaylistSavePlaylists.Text = "Save Playlists";
+            this.miPlaylistSavePlaylists.ToolTipText = "This also happends when you close the application.";
             this.miPlaylistSavePlaylists.Click += new System.EventHandler(this.miPlaylistSavePlaylists_Click);
             // 
             // miPlaylistLoadPlaylists
             // 
             this.miPlaylistLoadPlaylists.Name = "miPlaylistLoadPlaylists";
-            this.miPlaylistLoadPlaylists.Size = new System.Drawing.Size(175, 22);
+            this.miPlaylistLoadPlaylists.Size = new System.Drawing.Size(188, 22);
             this.miPlaylistLoadPlaylists.Text = "Load Playlists";
+            this.miPlaylistLoadPlaylists.Visible = false;
             this.miPlaylistLoadPlaylists.Click += new System.EventHandler(this.miPlaylistLoadPlaylists_Click);
+            // 
+            // miPlaylistResetTimesPlayed
+            // 
+            this.miPlaylistResetTimesPlayed.Name = "miPlaylistResetTimesPlayed";
+            this.miPlaylistResetTimesPlayed.Size = new System.Drawing.Size(188, 22);
+            this.miPlaylistResetTimesPlayed.Text = "Reset Times Played";
+            this.miPlaylistResetTimesPlayed.Click += new System.EventHandler(this.miPlaylistResetTimesPlayed_Click);
             // 
             // miPreferences
             // 
@@ -263,7 +277,7 @@
             this.cbmiPreferencesWriteToFile,
             this.tbxmiPreferencesWTFLocation});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItem1.Text = "Write to file";
             this.toolStripMenuItem1.ToolTipText = "Write the current playing status to a .txt file";
             // 
@@ -291,7 +305,7 @@
             this.toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.micbxPrefencesPlayingModes});
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(147, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItem2.Text = "Playing mode";
             this.toolStripMenuItem2.ToolTipText = "Normal goes from the top to the bottom.\r\nRandom randomizes randomly between songs" +
     ".\r\nSmart randomizes between the least played songs.";
@@ -467,6 +481,9 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.tsslblPlaylist,
+            this.toolStripStatusLabel2,
             this.tsslblStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 306);
             this.statusStrip1.Name = "statusStrip1";
@@ -480,12 +497,30 @@
             this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
             this.tsslblStatus.Text = "Stopped";
             // 
-            // miPlaylistResetTimesPlayed
+            // toolStripStatusLabel1
             // 
-            this.miPlaylistResetTimesPlayed.Name = "miPlaylistResetTimesPlayed";
-            this.miPlaylistResetTimesPlayed.Size = new System.Drawing.Size(175, 22);
-            this.miPlaylistResetTimesPlayed.Text = "Reset Times Played";
-            this.miPlaylistResetTimesPlayed.Click += new System.EventHandler(this.miPlaylistResetTimesPlayed_Click);
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(93, 17);
+            this.toolStripStatusLabel1.Text = "Current playlist: ";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
+            this.toolStripStatusLabel2.Text = "|";
+            // 
+            // tsslblPlaylist
+            // 
+            this.tsslblPlaylist.Name = "tsslblPlaylist";
+            this.tsslblPlaylist.Size = new System.Drawing.Size(21, 17);
+            this.tsslblPlaylist.Text = "All";
+            // 
+            // miPlaylistDeleteCurrent
+            // 
+            this.miPlaylistDeleteCurrent.Name = "miPlaylistDeleteCurrent";
+            this.miPlaylistDeleteCurrent.Size = new System.Drawing.Size(188, 22);
+            this.miPlaylistDeleteCurrent.Text = "Delete current playlist";
+            this.miPlaylistDeleteCurrent.Click += new System.EventHandler(this.miPlaylistDeleteCurrent_Click);
             // 
             // MainForm
             // 
@@ -561,6 +596,10 @@
         private System.Windows.Forms.ToolStripMenuItem miPlaylistSavePlaylists;
         private System.Windows.Forms.ToolStripMenuItem miPlaylistLoadPlaylists;
         private System.Windows.Forms.ToolStripMenuItem miPlaylistResetTimesPlayed;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel tsslblPlaylist;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripMenuItem miPlaylistDeleteCurrent;
     }
 }
 

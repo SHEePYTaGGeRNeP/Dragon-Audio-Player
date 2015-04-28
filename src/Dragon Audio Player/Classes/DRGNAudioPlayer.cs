@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using NAudio.Wave;
 
 namespace Dragon_Audio_Player.Classes
@@ -40,11 +39,11 @@ namespace Dragon_Audio_Player.Classes
             get { return Path.Combine(StaticClass.AppDataFolder, "Playlists.txt"); }
         }
 
-        public delegate void NewSongHandler(object sender, EventArgs e);
+        public delegate void NewSongHandler(object pSender, EventArgs pE);
         // Fired when a new song is played
         public event NewSongHandler OnNewSong;
 
-        public delegate void TimesPlayedIncreaseHandler(object sender, AudioFile pFile);
+        public delegate void TimesPlayedIncreaseHandler(object pSender, AudioFile pFile);
         // Fired when PlayNext is called
         public event TimesPlayedIncreaseHandler OnTimesPlayedIncrease;
 
@@ -168,7 +167,7 @@ namespace Dragon_Audio_Player.Classes
         }
 
         // FIX  position = 175K  Length = 5M
-        private void PlayBackEnds(object sender, StoppedEventArgs e)
+        private void PlayBackEnds(object pSender, StoppedEventArgs pE)
         {
             if (_mediaFoundationReader.Position >= _mediaFoundationReader.Length)
                 PlayNext();
@@ -242,7 +241,7 @@ namespace Dragon_Audio_Player.Classes
                 _waveOutDevice.Play();
             }
             else
-                throw new ArgumentNullException("MediaFoundationReader is null");
+                throw new NullReferenceException("MediaFoundationReader is null");
         }
         public void Previous()
         {
@@ -273,7 +272,7 @@ namespace Dragon_Audio_Player.Classes
         public void SetPlaylist(string pName)
         {
             if (string.IsNullOrEmpty(pName))
-                throw new ArgumentNullException("Playlist name is empty.");
+                throw new ArgumentNullException(pName);
             Playlist lvPlaylist = GetPlaylist(pName);
             if (lvPlaylist != null)
                 CurrentPlaylist = lvPlaylist;
@@ -286,7 +285,7 @@ namespace Dragon_Audio_Player.Classes
                             StaticClass.PlaylistsListToJson(Playlists);
             StaticClass.WriteToFile(pFileLocation, lvText);
         }
-        public void LoadPlaylists(string pFileLocation)
+        public string LoadPlaylists(string pFileLocation)
         {
             if (File.Exists(pFileLocation))
             {
@@ -295,12 +294,17 @@ namespace Dragon_Audio_Player.Classes
                 catch
                 {
                     // file is empty
-                    return;
+                    return String.Empty;
                 }
                 Playlists = StaticClass.JsonToPlaylistsList(File.ReadAllText(pFileLocation));
+                string lvReturnMessage = String.Empty;
+                foreach (Playlist lvPlaylist in Playlists)
+                    lvReturnMessage += lvPlaylist.FixPlaylist();
                 if (Playlists.Count > 0)
                     CurrentPlaylist = Playlists[0];
+                return lvReturnMessage;
             }
+            return String.Empty;
         }
         public void DeleteSongFromPlaylist(AudioFile pAf)
         {
@@ -309,6 +313,14 @@ namespace Dragon_Audio_Player.Classes
             if (CurrentlyPlaying == pAf)
                 Stop();
             CurrentPlaylist.Songs.Remove(pAf);
+        }
+        public void DeleteCurrentPlaylist()
+        {
+            Playlists.Remove(CurrentPlaylist);
+            if (Playlists.Count > 0)
+                CurrentPlaylist = Playlists[0];
+            else
+                CurrentPlaylist = null;
         }
 
         #endregion

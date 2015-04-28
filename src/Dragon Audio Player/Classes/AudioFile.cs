@@ -91,9 +91,19 @@ namespace Dragon_Audio_Player.Classes
             catch
             { throw new Exception("Cannot find artist. Complain to developer please."); }
         }
+        /// <summary>
+        /// String.Format("{0} - [{1}] {2}", Artist, Album, Title);
+        /// </summary>
+        /// <returns>String.Format("{0} - [{1}] {2}", Artist, Album, Title);</returns>
         public override string ToString()
         {
+            if (Artist != null && Album != null && Title != null)
             return String.Format("{0} - [{1}] {2}", Artist, Album, Title);
+            if (Artist == null && Album != null && Title != null)
+                return String.Format("[{0}] {1}", Album, Title);
+            if (Artist != null && Album == null && Title != null)
+                return String.Format("{0} - {1}", Artist, Title);
+            return "Empty Song Title !! Please fixerino";
         }
 
     }

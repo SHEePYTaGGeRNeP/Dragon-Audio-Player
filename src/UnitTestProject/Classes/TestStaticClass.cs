@@ -18,7 +18,7 @@ namespace UnitTestProject.Classes
         //      ---------------------------------------------
 
         private const string _PLAYLIST_JSON = 
-            "{\"Playlists\":[{\"Songs\":[{\"Title\":\"test\",\"FileLocation\":\"test\",\"Artist\":\"test\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0},{\"Title\":\"test2\",\"FileLocation\":\"test2\",\"Artist\":\"test2\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0}],\"Name\":\"test\"}]}";
+            "{\"Playlists\":[{\"Songs\":[{\"Title\":\"test\",\"FileLocation\":\"test\",\"Artist\":\"test\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0},{\"Title\":\"test2\",\"FileLocation\":\"test2\",\"Artist\":\"test2\",\"Album\":\"\",\"Year\":0,\"Duration\":\"00:00:00\",\"FileType\":null,\"DurationString\":\"00:00\",\"TimesPlayed\":0}],\"Folders\":[],\"Name\":\"test\"}]}";
            
 
         [TestMethod]

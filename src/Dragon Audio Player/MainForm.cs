@@ -53,7 +53,7 @@ namespace Dragon_Audio_Player
                     UpdateDataGridTimesPlayed(pFile);
                 };
 
-                _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+               LoadPlaylists();
             }
             catch (Exception lvEx)
             {
@@ -64,7 +64,7 @@ namespace Dragon_Audio_Player
         #region >< >< >< >< >< >< >< >< >< ><  F O R M   >< >< >< >< >< >< >< >< >< >< >< ><
 
         // ReSharper disable once InconsistentNaming
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs pE)
         {
             try
             {
@@ -110,9 +110,14 @@ namespace Dragon_Audio_Player
                     micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(DrgnAudioPlayer.EPlayingMode.smart.ToString("G"));
                 else
                     micbxPrefencesPlayingModes.SelectedIndex = micbxPrefencesPlayingModes.Items.IndexOf(Settings.Default.PlayingMode);
-                cbxmiPlaylistSelect.SelectedIndex = cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
-
-                _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+                if (!String.IsNullOrEmpty(Settings.Default.LastPlayinglist) &&
+                    _audioPlayer.GetPlaylist(Settings.Default.LastPlayinglist) != null)
+                {
+                    cbxmiPlaylistSelect.SelectedIndex =
+                        cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
+                    _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
+                }
             }
             catch (Exception lvEx)
             { MessageBox.Show(Resources.Error_MainForm_LoadFromSettings + lvEx.Message, 
@@ -196,6 +201,7 @@ namespace Dragon_Audio_Player
         {
             try
             {
+                // TODO: Multithread this shit.
                 this.Cursor = Cursors.WaitCursor;
                 dgridSongs.Rows.Clear();
                 foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
@@ -342,7 +348,7 @@ namespace Dragon_Audio_Player
                     this.Cursor = Cursors.Default;
                 }
                 if (lvSkipped != String.Empty)
-                    MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(lvSkipped, Resources.Skipped_files, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
             catch (Exception lvEx)
@@ -375,7 +381,7 @@ namespace Dragon_Audio_Player
                     this.Cursor = Cursors.Default;
                 }
                 if (lvSkipped != String.Empty)
-                    MessageBox.Show(lvSkipped, "Skipped files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(lvSkipped, Resources.Skipped_files, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception lvEx)
             {
@@ -430,16 +436,30 @@ namespace Dragon_Audio_Player
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
-
+        
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
         {
             try
             {
-                if (tbxmiPlaylistNew.Text == "")
-                    MessageBox.Show("Please enter a playlist name.", "Playlist name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (String.IsNullOrEmpty(tbxmiPlaylistNew.Text.Trim()))
+                    MessageBox.Show(Resources.miPlaylistNewCreate_Please_enter_a_playlist_name_, Resources.Playlist_name,
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
                 {
-                    // TODO: create new playlist.
+                    if (_audioPlayer.GetPlaylist(tbxmiPlaylistNew.Text) != null)
+                        MessageBox.Show(Resources.Playlist_with_this_name_already_exists,
+                            Resources.Playlist_with_this_name_already_exists,MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    else
+                    {
+                        // TODO: create new playlist.
+                        _audioPlayer.Playlists.Add(new Playlist(tbxmiPlaylistNew.Text));
+                        MessageBox.Show(tbxmiPlaylistNew.Text + Resources.Playlist_created,
+                            Resources.New_playlist_created, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tbxmiPlaylistNew.Text = String.Empty;
+                        LoadUserInterface();
+                        cbxmiPlaylistSelect.SelectedIndex =
+                            cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
+                    }
                 }
             }
             catch (Exception lvEx)
@@ -447,24 +467,81 @@ namespace Dragon_Audio_Player
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
-        private void cbxmiPlaylistSelect_Click(object sender, EventArgs e)
+        private void cbxmiPlaylistSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                if (cbxmiPlaylistSelect.Text != "")
+                if (!String.IsNullOrEmpty(cbxmiPlaylistSelect.Text))
+                {
                     _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
+                    RefreshDataGrid();
+                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
+                    cbxmiPlaylistSelect.SelectedIndex =
+                        cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
+                    Properties.Settings.Default.LastPlayinglist = _audioPlayer.CurrentPlaylist.Name;
+                }
             }
             catch (Exception lvEx)
             {
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
+        private void miPlaylistDeleteCurrent_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (DialogResult.Yes ==
+                    MessageBox.Show(String.Format("Are you sure you want to delete the current playlist: {0}?",
+                        _audioPlayer.CurrentPlaylist.Name), Resources.Delete_current_playlist_, MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question))
+                {
+                    _audioPlayer.DeleteCurrentPlaylist();
+                    LoadUserInterface();
+                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
+                    cbxmiPlaylistSelect.SelectedIndex =
+                        cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
+                    RefreshDataGrid();
+                }
+            }
+            catch (Exception lvEx)
+            {
+                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name,lvEx.Message);
+            }
+        }
+        private void miPlaylistSavePlaylists_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
+            }
+            catch (Exception lvEx)
+            {
+                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
+            }
+        }
+        private void miPlaylistLoadPlaylists_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadPlaylists();
+                LoadUserInterface();
+                RefreshDataGrid();
+            }
+            catch (Exception lvEx)
+            {
+                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
+            }
+        }
+        private void miPlaylistResetTimesPlayed_Click(object sender, EventArgs e)
+        {
+            _audioPlayer.CurrentPlaylist.ResetTimesPlayed();
+            RefreshDataGrid();
+        }
 
         private void miHelpAbout_Click(object sender, EventArgs e)
         {
             try
             {
-                int t = Convert.ToInt32("a");
                 DrgnAboutBox ab = new DrgnAboutBox();
                 ab.ShowDialog();
             }
@@ -473,7 +550,6 @@ namespace Dragon_Audio_Player
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
-
 
         private void miPlay_Click(object sender, EventArgs e)
         {
@@ -546,36 +622,6 @@ namespace Dragon_Audio_Player
             }
         }
 
-        private void miPlaylistSavePlaylists_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
-            }
-            catch (Exception lvEx)
-            {
-                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
-            }
-        }
-        private void miPlaylistLoadPlaylists_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
-                RefreshDataGrid();
-            }
-            catch (Exception lvEx)
-            {
-                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
-            }
-        }
-        private void miPlaylistResetTimesPlayed_Click(object sender, EventArgs e)
-        {
-            _audioPlayer.CurrentPlaylist.ResetTimesPlayed();
-            RefreshDataGrid();
-        }
-
-
         // ReSharper restore InconsistentNaming
         #endregion
 
@@ -615,7 +661,8 @@ namespace Dragon_Audio_Player
                     { this._audioPlayer.PlayNext(); }
                     catch (Exception lvEx)
                     {
-                        MessageBox.Show("Error trying to play next song:\n" + lvEx.Message, "Next song error",
+                        MessageBox.Show(Resources.MainForm_tbarPlaying_ValueChanged_NextSongError 
+                            + lvEx.Message, Resources.MainForm_tbarPlaying_ValueChanged_Next_song_error,
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 else
@@ -714,7 +761,7 @@ namespace Dragon_Audio_Player
                 ChangeTitleSong(null);
             }
             catch (Exception lvEx)
-            { MessageBox.Show("Error trying to stop audio:\n" + lvEx.Message, "Stopping error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            { MessageBox.Show(Resources.MainForm_Stop_ + lvEx.Message, Resources.Stopping_error, MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
         private void Pause()
         {
@@ -735,7 +782,8 @@ namespace Dragon_Audio_Player
             { _audioPlayer.Seek(pMilliseconds, SeekOrigin.Begin); }
             catch (Exception lvEx)
             {
-                MessageBox.Show("Error trying to Seek to value: " + pMilliseconds + " milliseconds\n" + lvEx.Message, "Seek error",
+                MessageBox.Show(Resources.MainForm_Seek_Error_trying_to_Seek_to_value__ + pMilliseconds +
+                    Resources.MainForm_Seek_Milliseconds + lvEx.Message, Resources.MainForm_Seek_Seek_error,
                   MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -754,22 +802,40 @@ namespace Dragon_Audio_Player
         #endregion
 
 
-
+        private void LoadPlaylists()
+        {
+            try
+            {
+                string lvReturnMessage = _audioPlayer.LoadPlaylists(DrgnAudioPlayer.PlaylistFileName);
+                if (!String.IsNullOrEmpty(lvReturnMessage))
+                {
+                    PlaylistUpdate lvPu = new PlaylistUpdate(lvReturnMessage);
+                    lvPu.ShowDialog();
+                }
+            }
+            catch (Exception lvEx)
+            {
+                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
+            }
+        }
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="pDisposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool pDisposing)
         {
-            if (disposing && (components != null))
+            if (pDisposing && (components != null))
             {
                 components.Dispose();
             }
             if (_audioPlayer != null)
                 _audioPlayer.Dispose();
-            base.Dispose(disposing);
+            base.Dispose(pDisposing);
         }
+
+        
+
 
 
 

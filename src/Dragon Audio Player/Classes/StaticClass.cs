@@ -56,7 +56,6 @@ namespace Dragon_Audio_Player.Classes
                 List<Playlist> lvPlaylists = new List<Playlist>();
                 foreach (Playlist lvPl in lvList.Playlists)
                 {
-                    lvPl.FixPlaylist();
                     lvPlaylists.Add(lvPl);
                 }
                 return lvPlaylists;
