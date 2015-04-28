@@ -78,7 +78,7 @@ namespace Dragon_Audio_Player.Classes
                 {
                     Songs.Remove(lvAf);
                     if (lvAf != null)
-                        lvReturnMessage += String.Format("Playlist: {0} Removed: {1}\n", Name, lvAf.ToString());
+                        lvReturnMessage += String.Format("Playlist: {0} - Removed: {1}\n", Name, lvAf.ToString());
                 }
                 foreach (string lvFolder in Folders)
                 {
@@ -88,7 +88,7 @@ namespace Dragon_Audio_Player.Classes
                         {
                             // Empty = successfully added
                             if (AddFile(lvFile, false) == String.Empty)
-                                lvReturnMessage += String.Format("Playlist: {0} Added: {1}\n", Name, lvFile);
+                                lvReturnMessage += String.Format("Playlist: {0} - Added: {1}\n", Name, lvFile);
                         }
                     }
                 }
