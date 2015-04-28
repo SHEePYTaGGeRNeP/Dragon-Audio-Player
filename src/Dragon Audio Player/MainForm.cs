@@ -687,8 +687,7 @@ namespace Dragon_Audio_Player
         {
             try
             {
-                long lvSeekValue = (long)TimeSpan.FromSeconds(this.tbarPlaying.Value).TotalMilliseconds;
-                this.Seek(lvSeekValue);
+                _audioPlayer.ChangeVolume(tbarVolume.Value);
             }
             catch (Exception lvEx)
             {
