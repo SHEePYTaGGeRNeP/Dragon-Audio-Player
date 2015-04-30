@@ -78,7 +78,7 @@ namespace Dragon_Audio_Player.Classes
             Duration = lvTagFile.Properties.Duration;
         }
 
-        public void GetArtistFromTag(File pTag)
+        private void GetArtistFromTag(File pTag)
         {
             Artist = pTag.Tag.FirstAlbumArtist;
             if (Artist != null) return;

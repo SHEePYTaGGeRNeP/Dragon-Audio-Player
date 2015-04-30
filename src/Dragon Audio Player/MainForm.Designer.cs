@@ -35,6 +35,7 @@
             this.miPlaylistNewCreate = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistSelect = new System.Windows.Forms.ToolStripMenuItem();
             this.cbxmiPlaylistSelect = new System.Windows.Forms.ToolStripComboBox();
+            this.miPlaylistDeleteCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistSavePlaylists = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistLoadPlaylists = new System.Windows.Forms.ToolStripMenuItem();
             this.miPlaylistResetTimesPlayed = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,20 +54,19 @@
             this.miPrevious = new System.Windows.Forms.ToolStripButton();
             this.miNext = new System.Windows.Forms.ToolStripButton();
             this.dgridSongs = new System.Windows.Forms.DataGridView();
+            this.timer1s = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslblPlaylist = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.clmTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmAlbum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmYear = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmTimesPlayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmTimesPlayed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timer1s = new System.Windows.Forms.Timer(this.components);
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslblPlaylist = new System.Windows.Forms.ToolStripStatusLabel();
-            this.miPlaylistDeleteCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlPlaying.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarPlaying)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarVolume)).BeginInit();
@@ -236,6 +236,13 @@
             this.cbxmiPlaylistSelect.Size = new System.Drawing.Size(121, 23);
             this.cbxmiPlaylistSelect.SelectedIndexChanged += new System.EventHandler(this.cbxmiPlaylistSelect_SelectedIndexChanged);
             // 
+            // miPlaylistDeleteCurrent
+            // 
+            this.miPlaylistDeleteCurrent.Name = "miPlaylistDeleteCurrent";
+            this.miPlaylistDeleteCurrent.Size = new System.Drawing.Size(188, 22);
+            this.miPlaylistDeleteCurrent.Text = "Delete current playlist";
+            this.miPlaylistDeleteCurrent.Click += new System.EventHandler(this.miPlaylistDeleteCurrent_Click);
+            // 
             // miPlaylistSavePlaylists
             // 
             this.miPlaylistSavePlaylists.Name = "miPlaylistSavePlaylists";
@@ -277,7 +284,7 @@
             this.cbmiPreferencesWriteToFile,
             this.tbxmiPreferencesWTFLocation});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
             this.toolStripMenuItem1.Text = "Write to file";
             this.toolStripMenuItem1.ToolTipText = "Write the current playing status to a .txt file";
             // 
@@ -305,7 +312,7 @@
             this.toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.micbxPrefencesPlayingModes});
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(147, 22);
             this.toolStripMenuItem2.Text = "Playing mode";
             this.toolStripMenuItem2.ToolTipText = "Normal goes from the top to the bottom.\r\nRandom randomizes randomly between songs" +
     ".\r\nSmart randomizes between the least played songs.";
@@ -415,7 +422,7 @@
             this.clmAlbum,
             this.clmYear,
             this.clmDuration,
-            this.clmTimesPlayer,
+            this.clmTimesPlayed,
             this.clmLocation});
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
@@ -430,6 +437,48 @@
             this.dgridSongs.TabIndex = 4;
             this.dgridSongs.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgridSongs_CellDoubleClick);
             this.dgridSongs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgridSongs_KeyDown);
+            // 
+            // timer1s
+            // 
+            this.timer1s.Interval = 1000;
+            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.tsslblPlaylist,
+            this.toolStripStatusLabel2,
+            this.tsslblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 306);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(597, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(93, 17);
+            this.toolStripStatusLabel1.Text = "Current playlist: ";
+            // 
+            // tsslblPlaylist
+            // 
+            this.tsslblPlaylist.Name = "tsslblPlaylist";
+            this.tsslblPlaylist.Size = new System.Drawing.Size(21, 17);
+            this.tsslblPlaylist.Text = "All";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
+            this.toolStripStatusLabel2.Text = "|";
+            // 
+            // tsslblStatus
+            // 
+            this.tsslblStatus.Name = "tsslblStatus";
+            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
+            this.tsslblStatus.Text = "Stopped";
             // 
             // clmTitle
             // 
@@ -461,66 +510,17 @@
             this.clmDuration.Name = "clmDuration";
             this.clmDuration.ReadOnly = true;
             // 
-            // clmTimesPlayer
+            // clmTimesPlayed
             // 
-            this.clmTimesPlayer.HeaderText = "Times Played";
-            this.clmTimesPlayer.Name = "clmTimesPlayer";
-            this.clmTimesPlayer.ReadOnly = true;
+            this.clmTimesPlayed.HeaderText = "Times Played";
+            this.clmTimesPlayed.Name = "clmTimesPlayed";
+            this.clmTimesPlayed.ReadOnly = true;
             // 
             // clmLocation
             // 
             this.clmLocation.HeaderText = "Location";
             this.clmLocation.Name = "clmLocation";
             this.clmLocation.ReadOnly = true;
-            // 
-            // timer1s
-            // 
-            this.timer1s.Interval = 1000;
-            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.tsslblPlaylist,
-            this.toolStripStatusLabel2,
-            this.tsslblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 306);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(597, 22);
-            this.statusStrip1.TabIndex = 5;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // tsslblStatus
-            // 
-            this.tsslblStatus.Name = "tsslblStatus";
-            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
-            this.tsslblStatus.Text = "Stopped";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(93, 17);
-            this.toolStripStatusLabel1.Text = "Current playlist: ";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
-            this.toolStripStatusLabel2.Text = "|";
-            // 
-            // tsslblPlaylist
-            // 
-            this.tsslblPlaylist.Name = "tsslblPlaylist";
-            this.tsslblPlaylist.Size = new System.Drawing.Size(21, 17);
-            this.tsslblPlaylist.Text = "All";
-            // 
-            // miPlaylistDeleteCurrent
-            // 
-            this.miPlaylistDeleteCurrent.Name = "miPlaylistDeleteCurrent";
-            this.miPlaylistDeleteCurrent.Size = new System.Drawing.Size(188, 22);
-            this.miPlaylistDeleteCurrent.Text = "Delete current playlist";
-            this.miPlaylistDeleteCurrent.Click += new System.EventHandler(this.miPlaylistDeleteCurrent_Click);
             // 
             // MainForm
             // 
@@ -577,13 +577,6 @@
         private System.Windows.Forms.ToolStripButton miPrevious;
         private System.Windows.Forms.ToolStripButton miNext;
         private System.Windows.Forms.Timer timer1s;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmTitle;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmArtist;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmAlbum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmYear;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmDuration;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmTimesPlayer;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmLocation;
         private System.Windows.Forms.ToolStripTextBox tbxmiPlaylistNew;
         private System.Windows.Forms.ToolStripMenuItem miPlaylistNewCreate;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
@@ -600,6 +593,13 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslblPlaylist;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripMenuItem miPlaylistDeleteCurrent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmTitle;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmArtist;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmAlbum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmYear;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmDuration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmTimesPlayed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmLocation;
     }
 }
 

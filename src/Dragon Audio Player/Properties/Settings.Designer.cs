@@ -49,7 +49,7 @@ namespace Dragon_Audio_Player.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Smart Mode")]
+        [global::System.Configuration.DefaultSettingValueAttribute("smart mode")]
         public string PlayingMode {
             get {
                 return ((string)(this["PlayingMode"]));
@@ -92,6 +92,90 @@ namespace Dragon_Audio_Player.Properties {
             }
             set {
                 this["WriteToFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthTitle {
+            get {
+                return ((int)(this["ColumnWidthTitle"]));
+            }
+            set {
+                this["ColumnWidthTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthArtist {
+            get {
+                return ((int)(this["ColumnWidthArtist"]));
+            }
+            set {
+                this["ColumnWidthArtist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthAlbum {
+            get {
+                return ((int)(this["ColumnWidthAlbum"]));
+            }
+            set {
+                this["ColumnWidthAlbum"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("80")]
+        public int ColumnWidthYear {
+            get {
+                return ((int)(this["ColumnWidthYear"]));
+            }
+            set {
+                this["ColumnWidthYear"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthDuration {
+            get {
+                return ((int)(this["ColumnWidthDuration"]));
+            }
+            set {
+                this["ColumnWidthDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthTimesPlayed {
+            get {
+                return ((int)(this["ColumnWidthTimesPlayed"]));
+            }
+            set {
+                this["ColumnWidthTimesPlayed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("79")]
+        public int ColumnWidthLocation {
+            get {
+                return ((int)(this["ColumnWidthLocation"]));
+            }
+            set {
+                this["ColumnWidthLocation"] = value;
             }
         }
     }

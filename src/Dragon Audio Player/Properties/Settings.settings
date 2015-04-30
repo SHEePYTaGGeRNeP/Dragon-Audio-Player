@@ -9,7 +9,7 @@
       <Value Profile="(Default)">500, 300</Value>
     </Setting>
     <Setting Name="PlayingMode" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Smart Mode</Value>
+      <Value Profile="(Default)">smart mode</Value>
     </Setting>
     <Setting Name="LastPlayinglist" Type="System.String" Scope="User">
       <Value Profile="(Default)">All Songs</Value>
@@ -19,6 +19,27 @@
     </Setting>
     <Setting Name="WriteToFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ColumnWidthTitle" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
+    </Setting>
+    <Setting Name="ColumnWidthArtist" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
+    </Setting>
+    <Setting Name="ColumnWidthAlbum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
+    </Setting>
+    <Setting Name="ColumnWidthYear" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">80</Value>
+    </Setting>
+    <Setting Name="ColumnWidthDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
+    </Setting>
+    <Setting Name="ColumnWidthTimesPlayed" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
+    </Setting>
+    <Setting Name="ColumnWidthLocation" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">79</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -52,8 +52,6 @@ namespace Dragon_Audio_Player
                 {
                     UpdateDataGridTimesPlayed(pFile);
                 };
-
-               LoadPlaylists();
             }
             catch (Exception lvEx)
             {
@@ -69,9 +67,10 @@ namespace Dragon_Audio_Player
             try
             {
                 this.Cursor = Cursors.WaitCursor;
+                LoadPlaylists();
                 foreach (string lvS in _audioPlayer.GetPlaylistNames())
                     cbxmiPlaylistSelect.Items.Add(lvS);
-                LoadUserInterface();
+                this.FillComboBoxes();
                 LoadFromSettings();
                 RefreshDataGrid();
                 this.Cursor = Cursors.Default;
@@ -82,7 +81,7 @@ namespace Dragon_Audio_Player
             }
         }
 
-        private void LoadUserInterface()
+        private void FillComboBoxes()
         {
             try
             {
@@ -113,15 +112,26 @@ namespace Dragon_Audio_Player
                 if (!String.IsNullOrEmpty(Settings.Default.LastPlayinglist) &&
                     _audioPlayer.GetPlaylist(Settings.Default.LastPlayinglist) != null)
                 {
-                    cbxmiPlaylistSelect.SelectedIndex =
-                        cbxmiPlaylistSelect.Items.IndexOf(Settings.Default.LastPlayinglist);
-                    _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
-                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
+                    this.SetPlaylist(Settings.Default.LastPlayinglist);
                 }
+                this.LoadColumnSizesFromSettings();
             }
             catch (Exception lvEx)
-            { MessageBox.Show(Resources.Error_MainForm_LoadFromSettings + lvEx.Message, 
-                Resources.MainForm_LoadFromSettings_Loading_error, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            {
+                MessageBox.Show(Resources.Error_MainForm_LoadFromSettings + lvEx.Message,
+                  Resources.MainForm_LoadFromSettings_Loading_error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadColumnSizesFromSettings()
+        {
+            dgridSongs.Columns["clmAlbum"].Width = Settings.Default.ColumnWidthAlbum;
+            dgridSongs.Columns["clmArtist"].Width = Settings.Default.ColumnWidthArtist;
+            dgridSongs.Columns["clmDuration"].Width = Settings.Default.ColumnWidthDuration;
+            dgridSongs.Columns["clmLocation"].Width = Settings.Default.ColumnWidthLocation;
+            dgridSongs.Columns["clmTimesPlayed"].Width = Settings.Default.ColumnWidthTimesPlayed;
+            dgridSongs.Columns["clmTitle"].Width = Settings.Default.ColumnWidthTitle;
+            dgridSongs.Columns["clmYear"].Width = Settings.Default.ColumnWidthYear;
         }
         private void SetSettings()
         {
@@ -132,10 +142,20 @@ namespace Dragon_Audio_Player
                 Settings.Default.PlayingMode = micbxPrefencesPlayingModes.Text;
                 Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;
                 Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
+                Settings.Default.ColumnWidthAlbum = dgridSongs.Columns["clmAlbum"].Width;
+                Settings.Default.ColumnWidthArtist = dgridSongs.Columns["clmArtist"].Width;
+                Settings.Default.ColumnWidthDuration = dgridSongs.Columns["clmDuration"].Width;
+                Settings.Default.ColumnWidthLocation= dgridSongs.Columns["clmLocation"].Width;
+                Settings.Default.ColumnWidthTimesPlayed= dgridSongs.Columns["clmTimesPlayed"].Width;
+                Settings.Default.ColumnWidthTitle = dgridSongs.Columns["clmTitle"].Width;
+                Settings.Default.ColumnWidthYear = dgridSongs.Columns["clmYear"].Width;
+
             }
             catch (Exception lvEx)
-            { MessageBox.Show(Resources.Error_MainForm_SetSettings + lvEx.Message, 
-                Resources.MainForm_SetSettings_Saving_error, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            {
+                MessageBox.Show(Resources.Error_MainForm_SetSettings + lvEx.Message,
+                  Resources.MainForm_SetSettings_Saving_error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ChangeTitleSong(AudioFile pAf)
@@ -179,12 +199,12 @@ namespace Dragon_Audio_Player
                 }
                 switch (this.cbmiPreferencesWriteToFile.SelectedIndex)
                 {
-                        // 0 = dont write
-                        // Write on new song
+                    // 0 = dont write
+                    // Write on new song
                     case 1: StaticClass.WriteToFile(this.tbxmiPreferencesWTFLocation.Text,
                         String.Format("                 [{0}] {1} - {2}", this._audioPlayer.PlayingState.ToString(),
                             this._audioPlayer.CurrentlyPlaying.Artist, this._audioPlayer.CurrentlyPlaying.Title)); break;
-                        // Write every second
+                    // Write every second
                     case 2: StaticClass.WriteToFile(this.tbxmiPreferencesWTFLocation.Text,
                         String.Format("                 [{0}] {1} - {2} {3} / {4}", this._audioPlayer.PlayingState.ToString(),
                             this._audioPlayer.CurrentlyPlaying.Artist, this._audioPlayer.CurrentlyPlaying.Title, this._audioPlayer.CurrentTimeString,
@@ -192,8 +212,10 @@ namespace Dragon_Audio_Player
                 }
             }
             catch (Exception lvEx)
-            { MessageBox.Show(String.Format("Error trying to write song to textfile located in :{0}\n\n{1}",
-                tbxmiPreferencesWTFLocation.Text, lvEx.Message), Resources.Writing_error, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            {
+                MessageBox.Show(String.Format("Error trying to write song to textfile located in :{0}\n\n{1}",
+                  tbxmiPreferencesWTFLocation.Text, lvEx.Message), Resources.Writing_error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
@@ -261,7 +283,7 @@ namespace Dragon_Audio_Player
         {
             try
             {
-                if (e.KeyCode != Keys.Delete)return;
+                if (e.KeyCode != Keys.Delete) return;
                 if (this.dgridSongs.SelectedRows.Count <= 0
                     || DialogResult.Yes
                     != MessageBox.Show(
@@ -436,7 +458,7 @@ namespace Dragon_Audio_Player
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
-        
+
         private void miPlaylistNewCreate_Click(object sender, EventArgs e)
         {
             try
@@ -448,7 +470,7 @@ namespace Dragon_Audio_Player
                 {
                     if (_audioPlayer.GetPlaylist(tbxmiPlaylistNew.Text) != null)
                         MessageBox.Show(Resources.Playlist_with_this_name_already_exists,
-                            Resources.Playlist_with_this_name_already_exists,MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                            Resources.Playlist_with_this_name_already_exists, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
                     {
                         // TODO: create new playlist.
@@ -456,9 +478,10 @@ namespace Dragon_Audio_Player
                         MessageBox.Show(tbxmiPlaylistNew.Text + Resources.Playlist_created,
                             Resources.New_playlist_created, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tbxmiPlaylistNew.Text = String.Empty;
-                        LoadUserInterface();
-                        cbxmiPlaylistSelect.SelectedIndex =
-                            cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
+
+                        cbxmiPlaylistSelect.Items.Clear();
+                        cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
+                        this.SetPlaylist(_audioPlayer.GetPlaylistNames()[_audioPlayer.Playlists.Count]);
                     }
                 }
             }
@@ -471,15 +494,7 @@ namespace Dragon_Audio_Player
         {
             try
             {
-                if (!String.IsNullOrEmpty(cbxmiPlaylistSelect.Text))
-                {
-                    _audioPlayer.SetPlaylist(cbxmiPlaylistSelect.Text);
-                    RefreshDataGrid();
-                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
-                    cbxmiPlaylistSelect.SelectedIndex =
-                        cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
-                    Properties.Settings.Default.LastPlayinglist = _audioPlayer.CurrentPlaylist.Name;
-                }
+                this.SetPlaylist(cbxmiPlaylistSelect.Text);
             }
             catch (Exception lvEx)
             {
@@ -495,17 +510,18 @@ namespace Dragon_Audio_Player
                         _audioPlayer.CurrentPlaylist.Name), Resources.Delete_current_playlist_, MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Question))
                 {
+                    bool currentPlaylist = _audioPlayer.CurrentPlaylist.Name == cbxmiPlaylistSelect.Text;
                     _audioPlayer.DeleteCurrentPlaylist();
-                    LoadUserInterface();
-                    tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
-                    cbxmiPlaylistSelect.SelectedIndex =
-                        cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
-                    RefreshDataGrid();
+                    cbxmiPlaylistSelect.Items.Remove(cbxmiPlaylistSelect.SelectedItem);
+                    if (currentPlaylist && cbxmiPlaylistSelect.Items.Count > 0)
+                        this.SetPlaylist(cbxmiPlaylistSelect.Items[0].ToString());
+                    else
+                        this.RefreshDataGrid();
                 }
             }
             catch (Exception lvEx)
             {
-                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name,lvEx.Message);
+                this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
         private void miPlaylistSavePlaylists_Click(object sender, EventArgs e)
@@ -524,8 +540,12 @@ namespace Dragon_Audio_Player
             try
             {
                 LoadPlaylists();
-                LoadUserInterface();
-                RefreshDataGrid();
+                cbxmiPlaylistSelect.Items.Clear();
+                cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
+                if (cbxmiPlaylistSelect.Items.Count > 0)
+                    this.SetPlaylist(cbxmiPlaylistSelect.Items[0].ToString());
+                else
+                    this.RefreshDataGrid();
             }
             catch (Exception lvEx)
             {
@@ -661,7 +681,7 @@ namespace Dragon_Audio_Player
                     { this._audioPlayer.PlayNext(); }
                     catch (Exception lvEx)
                     {
-                        MessageBox.Show(Resources.MainForm_tbarPlaying_ValueChanged_NextSongError 
+                        MessageBox.Show(Resources.MainForm_tbarPlaying_ValueChanged_NextSongError
                             + lvEx.Message, Resources.MainForm_tbarPlaying_ValueChanged_Next_song_error,
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -817,6 +837,20 @@ namespace Dragon_Audio_Player
                 this.ShowUnexpectedErrorMessage(System.Reflection.MethodBase.GetCurrentMethod().Name, lvEx.Message);
             }
         }
+        private void SetPlaylist(string pPlaylistName)
+        {
+            if (!String.IsNullOrEmpty(pPlaylistName))
+            {
+                _audioPlayer.SetPlaylist(pPlaylistName);
+                tsslblPlaylist.Text = _audioPlayer.CurrentPlaylist.Name;
+                cbxmiPlaylistSelect.SelectedIndex =
+                    cbxmiPlaylistSelect.Items.IndexOf(_audioPlayer.CurrentPlaylist.Name);
+                RefreshDataGrid();
+                Properties.Settings.Default.LastPlayinglist = _audioPlayer.CurrentPlaylist.Name;
+            }
+        }
+
+
 
         /// <summary>
         /// Clean up any resources being used.
@@ -833,7 +867,7 @@ namespace Dragon_Audio_Player
             base.Dispose(pDisposing);
         }
 
-        
+
 
 
 

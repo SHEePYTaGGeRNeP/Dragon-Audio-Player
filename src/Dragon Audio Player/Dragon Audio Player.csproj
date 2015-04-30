@@ -40,7 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -57,10 +57,10 @@
     <ApplicationIcon>LogoShield.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>0B7A932D8F6C6E54456C1B10ACA9674343302083</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DF73CEC101DF56A4DF79701A4E25BEBFDD8F24E3</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Dragon Audio Player_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Dragon Audio Player_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -126,6 +126,7 @@
       <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Dragon Audio Player_1_TemporaryKey.pfx" />
     <None Include="Dragon Audio Player_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

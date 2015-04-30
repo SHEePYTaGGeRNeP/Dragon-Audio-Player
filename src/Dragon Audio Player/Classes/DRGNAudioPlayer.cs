@@ -18,7 +18,7 @@ namespace Dragon_Audio_Player.Classes
     //      ---------------------------------------------
     //      |   Product:    Dragon Audio Player         |
     //      |   By:         SHEePYTaGGeRNeP             |
-    //      |   Date:       28/03/2015                  |
+    //      |   Date:       30/04/2015                  |
     //      |   Version:    0.4                         |
     //      |   Copyright © Double Dutch Dragons 2015   |
     //      ---------------------------------------------
@@ -86,8 +86,6 @@ namespace Dragon_Audio_Player.Classes
             _waveOutDevice.PlaybackStopped += PlayBackEnds;
             Playlists = new List<Playlist>();
             PreviouslyPlayedSongs = new Stack<string>();
-            Playlists.Add(new Playlist("All"));
-            CurrentPlaylist = Playlists[0];
         }
 
 
@@ -267,6 +265,8 @@ namespace Dragon_Audio_Player.Classes
         }
         public string[] GetPlaylistNames()
         {
+            if (Playlists.Count == 0)
+                return new string[0];
             return Playlists.Select(p => p.Name).ToArray();
         }
         public void SetPlaylist(string pName)
@@ -316,11 +316,14 @@ namespace Dragon_Audio_Player.Classes
         }
         public void DeleteCurrentPlaylist()
         {
-            Playlists.Remove(CurrentPlaylist);
-            if (Playlists.Count > 0)
-                CurrentPlaylist = Playlists[0];
-            else
-                CurrentPlaylist = null;
+            if (CurrentPlaylist != null)
+            {
+                Playlists.Remove(CurrentPlaylist);
+                if (Playlists.Count > 0)
+                    CurrentPlaylist = Playlists[0];
+                else
+                    CurrentPlaylist = null;
+            }
         }
 
         #endregion
