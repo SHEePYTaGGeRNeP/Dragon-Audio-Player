@@ -74,6 +74,7 @@ namespace Dragon_Audio_Player
                 LoadFromSettings();
                 RefreshDataGrid();
                 this.Cursor = Cursors.Default;
+                dgridSongs.ClearSelection();
             }
             catch (Exception lvEx)
             {
@@ -145,8 +146,8 @@ namespace Dragon_Audio_Player
                 Settings.Default.ColumnWidthAlbum = dgridSongs.Columns["clmAlbum"].Width;
                 Settings.Default.ColumnWidthArtist = dgridSongs.Columns["clmArtist"].Width;
                 Settings.Default.ColumnWidthDuration = dgridSongs.Columns["clmDuration"].Width;
-                Settings.Default.ColumnWidthLocation= dgridSongs.Columns["clmLocation"].Width;
-                Settings.Default.ColumnWidthTimesPlayed= dgridSongs.Columns["clmTimesPlayed"].Width;
+                Settings.Default.ColumnWidthLocation = dgridSongs.Columns["clmLocation"].Width;
+                Settings.Default.ColumnWidthTimesPlayed = dgridSongs.Columns["clmTimesPlayed"].Width;
                 Settings.Default.ColumnWidthTitle = dgridSongs.Columns["clmTitle"].Width;
                 Settings.Default.ColumnWidthYear = dgridSongs.Columns["clmYear"].Width;
 
