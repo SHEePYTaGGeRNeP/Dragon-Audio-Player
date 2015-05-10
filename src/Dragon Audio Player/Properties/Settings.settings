@@ -14,9 +14,6 @@
     <Setting Name="LastPlayinglist" Type="System.String" Scope="User">
       <Value Profile="(Default)">All Songs</Value>
     </Setting>
-    <Setting Name="SongOutLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="WriteToFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>

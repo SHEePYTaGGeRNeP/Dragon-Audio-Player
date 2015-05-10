@@ -74,18 +74,6 @@ namespace Dragon_Audio_Player.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SongOutLocation {
-            get {
-                return ((string)(this["SongOutLocation"]));
-            }
-            set {
-                this["SongOutLocation"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WriteToFile {
             get {
                 return ((string)(this["WriteToFile"]));

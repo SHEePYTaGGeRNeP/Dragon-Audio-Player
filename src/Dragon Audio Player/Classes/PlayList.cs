@@ -17,6 +17,7 @@ namespace Dragon_Audio_Player.Classes
         //      ---------------------------------------------
 
         public List<AudioFile> Songs { get; set; }
+        private readonly List<string> _ignoredSongs;
         public List<String> Folders { get; set; }
         public string Name { get; set; }
 
@@ -24,6 +25,7 @@ namespace Dragon_Audio_Player.Classes
         public Playlist(string pName)
         {
             Songs = new List<AudioFile>();
+            _ignoredSongs = new List<string>();
             Folders = new List<string>();
             Name = pName;
         }
@@ -86,9 +88,10 @@ namespace Dragon_Audio_Player.Classes
                     {
                         foreach (string lvFile in Directory.GetFiles(lvFolder))
                         {
-                            // Empty = successfully added
-                            if (AddFile(lvFile, false) == String.Empty)
-                                lvReturnMessage += String.Format("Playlist: {0} - Added: {1}\n", Name, lvFile);
+                            if (!_ignoredSongs.Contains(lvFile.ToLower(), StringComparer.CurrentCultureIgnoreCase))
+                                // Empty = successfully added
+                                if (AddFile(lvFile, false) == String.Empty)
+                                    lvReturnMessage += String.Format("Playlist: {0} - Added: {1}\n", Name, lvFile);
                         }
                     }
                 }
@@ -144,6 +147,14 @@ namespace Dragon_Audio_Player.Classes
         {
             foreach (AudioFile lvAf in Songs)
                 lvAf.TimesPlayed = 0;
+        }
+
+        public void RemoveSong(AudioFile pAf)
+        {
+            if (pAf == null)
+                throw new ArgumentNullException();
+            Songs.Remove(pAf);
+            _ignoredSongs.Add(pAf.FileLocation);
         }
 
     }

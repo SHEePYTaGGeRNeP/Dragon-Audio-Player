@@ -115,6 +115,8 @@ namespace Dragon_Audio_Player
                 {
                     this.SetPlaylist(Settings.Default.LastPlayinglist);
                 }
+                if (Settings.Default.WriteToFile != null)
+                    tbxmiPreferencesWTFLocation.Text = Settings.Default.WriteToFile;
                 this.LoadColumnSizesFromSettings();
             }
             catch (Exception lvEx)
@@ -142,7 +144,7 @@ namespace Dragon_Audio_Player
                 Settings.Default.Volume = tbarVolume.Value;
                 Settings.Default.PlayingMode = micbxPrefencesPlayingModes.Text;
                 Settings.Default.LastPlayinglist = cbxmiPlaylistSelect.Text;
-                Settings.Default.SongOutLocation = tbxmiPreferencesWTFLocation.Text;
+                Settings.Default.WriteToFile = tbxmiPreferencesWTFLocation.Text;
                 Settings.Default.ColumnWidthAlbum = dgridSongs.Columns["clmAlbum"].Width;
                 Settings.Default.ColumnWidthArtist = dgridSongs.Columns["clmArtist"].Width;
                 Settings.Default.ColumnWidthDuration = dgridSongs.Columns["clmDuration"].Width;
@@ -206,10 +208,22 @@ namespace Dragon_Audio_Player
                         String.Format("                 [{0}] {1} - {2}", this._audioPlayer.PlayingState.ToString(),
                             this._audioPlayer.CurrentlyPlaying.Artist, this._audioPlayer.CurrentlyPlaying.Title)); break;
                     // Write every second
-                    case 2: StaticClass.WriteToFile(this.tbxmiPreferencesWTFLocation.Text,
-                        String.Format("                 [{0}] {1} - {2} {3} / {4}", this._audioPlayer.PlayingState.ToString(),
-                            this._audioPlayer.CurrentlyPlaying.Artist, this._audioPlayer.CurrentlyPlaying.Title, this._audioPlayer.CurrentTimeString,
-                            this._audioPlayer.CurrentlyPlaying.DurationString)); break;
+                    case 2:
+                        if (_audioPlayer.CurrentlyPlaying != null)
+                        {
+                            StaticClass.WriteToFile(this.tbxmiPreferencesWTFLocation.Text,
+                                String.Format("                 [{0}] {1} - {2} {3} / {4}",
+                                    this._audioPlayer.PlayingState.ToString(),
+                                    this._audioPlayer.CurrentlyPlaying.Artist, this._audioPlayer.CurrentlyPlaying.Title,
+                                    this._audioPlayer.CurrentTimeString,
+                                    this._audioPlayer.CurrentlyPlaying.DurationString));
+                        }
+                        else
+                        {
+                            StaticClass.WriteToFile(this.tbxmiPreferencesWTFLocation.Text,
+                                String.Format("                 [Stopped]"));
+                        }
+                        break;
                 }
             }
             catch (Exception lvEx)
@@ -270,9 +284,11 @@ namespace Dragon_Audio_Player
         {
             try
             {
+                _audioPlayer.Stop();
                 _audioPlayer.SavePlaylists(DrgnAudioPlayer.PlaylistFileName);
                 SetSettings();
                 Settings.Default.Save();
+                WriteSongInfo();
                 _audioPlayer.Dispose();
             }
             catch (Exception lvEx)

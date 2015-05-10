@@ -312,7 +312,7 @@ namespace Dragon_Audio_Player.Classes
                 throw new ArgumentNullException();
             if (CurrentlyPlaying == pAf)
                 Stop();
-            CurrentPlaylist.Songs.Remove(pAf);
+            CurrentPlaylist.RemoveSong(pAf);
         }
         public void DeleteCurrentPlaylist()
         {

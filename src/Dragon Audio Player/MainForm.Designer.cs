@@ -19,7 +19,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlPlaying = new System.Windows.Forms.Panel();
             this.splitterPlaying = new System.Windows.Forms.Splitter();
             this.tbarPlaying = new System.Windows.Forms.TrackBar();
@@ -54,12 +54,6 @@
             this.miPrevious = new System.Windows.Forms.ToolStripButton();
             this.miNext = new System.Windows.Forms.ToolStripButton();
             this.dgridSongs = new System.Windows.Forms.DataGridView();
-            this.timer1s = new System.Windows.Forms.Timer(this.components);
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslblPlaylist = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.clmTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmAlbum = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,6 +61,12 @@
             this.clmDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmTimesPlayed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timer1s = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslblPlaylist = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlPlaying.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarPlaying)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarVolume)).BeginInit();
@@ -427,58 +427,16 @@
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
             this.dgridSongs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.DodgerBlue;
-            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.DodgerBlue;
+            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgridSongs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgridSongs.Size = new System.Drawing.Size(597, 241);
             this.dgridSongs.TabIndex = 4;
             this.dgridSongs.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgridSongs_CellDoubleClick);
             this.dgridSongs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgridSongs_KeyDown);
-            // 
-            // timer1s
-            // 
-            this.timer1s.Interval = 1000;
-            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.tsslblPlaylist,
-            this.toolStripStatusLabel2,
-            this.tsslblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 306);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(597, 22);
-            this.statusStrip1.TabIndex = 5;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(93, 17);
-            this.toolStripStatusLabel1.Text = "Current playlist: ";
-            // 
-            // tsslblPlaylist
-            // 
-            this.tsslblPlaylist.Name = "tsslblPlaylist";
-            this.tsslblPlaylist.Size = new System.Drawing.Size(21, 17);
-            this.tsslblPlaylist.Text = "All";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
-            this.toolStripStatusLabel2.Text = "|";
-            // 
-            // tsslblStatus
-            // 
-            this.tsslblStatus.Name = "tsslblStatus";
-            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
-            this.tsslblStatus.Text = "Stopped";
             // 
             // clmTitle
             // 
@@ -521,6 +479,49 @@
             this.clmLocation.HeaderText = "Location";
             this.clmLocation.Name = "clmLocation";
             this.clmLocation.ReadOnly = true;
+            // 
+            // timer1s
+            // 
+            this.timer1s.Interval = 1000;
+            this.timer1s.Tick += new System.EventHandler(this.timer1s_Tick);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.tsslblPlaylist,
+            this.toolStripStatusLabel2,
+            this.tsslblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 306);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(597, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(93, 17);
+            this.toolStripStatusLabel1.Text = "Current playlist: ";
+            // 
+            // tsslblPlaylist
+            // 
+            this.tsslblPlaylist.Name = "tsslblPlaylist";
+            this.tsslblPlaylist.Size = new System.Drawing.Size(21, 17);
+            this.tsslblPlaylist.Text = "All";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(10, 17);
+            this.toolStripStatusLabel2.Text = "|";
+            // 
+            // tsslblStatus
+            // 
+            this.tsslblStatus.Name = "tsslblStatus";
+            this.tsslblStatus.Overflow = System.Windows.Forms.ToolStripItemOverflow.Always;
+            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
+            this.tsslblStatus.Text = "Stopped";
             // 
             // MainForm
             // 
