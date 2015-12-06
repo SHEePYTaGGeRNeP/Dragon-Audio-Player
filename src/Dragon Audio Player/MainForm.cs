@@ -494,11 +494,11 @@ namespace Dragon_Audio_Player
                         _audioPlayer.Playlists.Add(new Playlist(tbxmiPlaylistNew.Text));
                         MessageBox.Show(tbxmiPlaylistNew.Text + Resources.Playlist_created,
                             Resources.New_playlist_created, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.SetPlaylist(tbxmiPlaylistNew.Text);
                         tbxmiPlaylistNew.Text = String.Empty;
 
                         cbxmiPlaylistSelect.Items.Clear();
                         cbxmiPlaylistSelect.Items.AddRange(_audioPlayer.GetPlaylistNames());
-                        this.SetPlaylist(_audioPlayer.GetPlaylistNames()[_audioPlayer.Playlists.Count]);
                     }
                 }
             }
