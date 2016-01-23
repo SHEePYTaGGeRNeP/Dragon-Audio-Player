@@ -19,7 +19,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlPlaying = new System.Windows.Forms.Panel();
             this.splitterPlaying = new System.Windows.Forms.Splitter();
             this.tbarPlaying = new System.Windows.Forms.TrackBar();
@@ -427,11 +427,11 @@
             this.dgridSongs.Location = new System.Drawing.Point(0, 62);
             this.dgridSongs.Name = "dgridSongs";
             this.dgridSongs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.DodgerBlue;
-            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.DodgerBlue;
+            this.dgridSongs.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgridSongs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgridSongs.Size = new System.Drawing.Size(597, 241);
             this.dgridSongs.TabIndex = 4;
@@ -520,7 +520,8 @@
             // 
             this.tsslblStatus.Name = "tsslblStatus";
             this.tsslblStatus.Overflow = System.Windows.Forms.ToolStripItemOverflow.Always;
-            this.tsslblStatus.Size = new System.Drawing.Size(51, 17);
+            this.tsslblStatus.Size = new System.Drawing.Size(427, 17);
+            this.tsslblStatus.Spring = true;
             this.tsslblStatus.Text = "Stopped";
             // 
             // MainForm

@@ -42,6 +42,7 @@ namespace Dragon_Audio_Player
             try
             {
                 InitializeComponent();
+                
                 tbarPlaying.MouseWheel += doNothing_MouseWheel;
                 _audioPlayer = new DrgnAudioPlayer();
                 _audioPlayer.OnNewSong += delegate

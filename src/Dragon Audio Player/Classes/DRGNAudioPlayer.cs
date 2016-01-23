@@ -83,7 +83,7 @@ namespace Dragon_Audio_Player.Classes
         public DrgnAudioPlayer()
         {
             _waveOutDevice = new WaveOut();
-            _waveOutDevice.PlaybackStopped += PlayBackEnds;
+            _waveOutDevice.PlaybackStopped += PlayBackEnds;            
             Playlists = new List<Playlist>();
             PreviouslyPlayedSongs = new Stack<string>();
         }
@@ -167,8 +167,10 @@ namespace Dragon_Audio_Player.Classes
         // FIX  position = 175K  Length = 5M
         private void PlayBackEnds(object pSender, StoppedEventArgs pE)
         {
-            if (_mediaFoundationReader.Position >= _mediaFoundationReader.Length)
-                PlayNext();
+            Console.WriteLine("PlayBack ended");
+            if (this._mediaFoundationReader.Position < this._mediaFoundationReader.Length) return;
+            Console.WriteLine("Playing next");
+            this.PlayNext();
         }
 
 
