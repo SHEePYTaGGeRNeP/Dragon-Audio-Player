@@ -260,7 +260,8 @@ namespace Dragon_Audio_Player
             {
                 foreach (DataGridViewRow lvRow in dgridSongs.Rows)
                 {
-                    if ((string)lvRow.Cells[6].Value == pAf.FileLocation) lvRow.Cells[5].Value = pAf.TimesPlayed;
+                    if ((string)lvRow.Cells[6].Value == pAf.FileLocation)
+                        lvRow.Cells[5].Value = pAf.TimesPlayed;
                 }
             }
             catch (Exception lvEx)

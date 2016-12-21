@@ -71,7 +71,7 @@ namespace UnitTestProject.Classes
             lvPlaylist.Songs.Add(lvAf2);
             lvPlaylist.Songs.Add(null);
             lvPlaylist.FixPlaylist();
-            Assert.AreEqual(2, lvPlaylist.Songs.Count);
+            Assert.AreEqual(0, lvPlaylist.Songs.Count);
         }
 
         [TestMethod]

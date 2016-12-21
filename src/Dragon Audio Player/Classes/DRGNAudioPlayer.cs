@@ -68,6 +68,7 @@ namespace Dragon_Audio_Player.Classes
         /// </summary>
         public Stack<string> PreviouslyPlayedSongs { get; private set; }
 
+        private bool _manualStoppedPlaying;
 
 
         public AudioFile LastAudioFile
@@ -111,6 +112,7 @@ namespace Dragon_Audio_Player.Classes
         #region >< >< >< >< >< >< >< >< >< ><  P L A Y   N E X T  >< >< >< >< >< >< >< ><
         public void PlayNext()
         {
+            this._manualStoppedPlaying = true;
             if (CurrentlyPlaying != null)
             {
                 CurrentlyPlaying.TimesPlayed++;
@@ -167,9 +169,12 @@ namespace Dragon_Audio_Player.Classes
         // FIX  position = 175K  Length = 5M
         private void PlayBackEnds(object pSender, StoppedEventArgs pE)
         {
+            if (this._manualStoppedPlaying)
+            {
+                this._manualStoppedPlaying = false;
+                return;
+            }
             Console.WriteLine("PlayBack ended");
-            if (this._mediaFoundationReader.Position < this._mediaFoundationReader.Length) return;
-            Console.WriteLine("Playing next");
             this.PlayNext();
         }
 
@@ -195,6 +200,7 @@ namespace Dragon_Audio_Player.Classes
                         }
                     if (PlayingState != PlaybackState.Paused || pFile != CurrentlyPlaying)
                     {
+                        this._manualStoppedPlaying = true;
                         _mediaFoundationReader = new MediaFoundationReader(pFile.FileLocation);
                         WaveChannel32 lvWc = new WaveChannel32(_mediaFoundationReader) { PadWithZeroes = false };
                         _waveOutDevice = new WaveOut();
@@ -222,6 +228,7 @@ namespace Dragon_Audio_Player.Classes
         public void Stop()
         {
             if (_waveOutDevice == null) return;
+            this._manualStoppedPlaying = true;
             _waveOutDevice.Stop();
             CurrentlyPlaying = null;
         }

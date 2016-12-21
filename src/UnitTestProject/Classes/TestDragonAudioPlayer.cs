@@ -67,6 +67,8 @@ namespace UnitTestProject.Classes
         {
             try
             {
+                this._audioPlayer.Playlists.Add(new Playlist("test"));
+                this._audioPlayer.SetPlaylist("test");
                 _audioPlayer.CurrentPlaylist.AddFolder("test1231b1b1b");
             }
             catch (IOException)
@@ -78,6 +80,8 @@ namespace UnitTestProject.Classes
         [TestMethod]
         public void TestAddFile()
         {
+            this._audioPlayer.Playlists.Add(new Playlist("test" ));
+            this._audioPlayer.SetPlaylist("test");
             Assert.AreEqual(String.Empty,_audioPlayer.CurrentPlaylist.AddFile(_AUDIO_1_PATH, true));
             Assert.AreNotEqual(String.Empty, _audioPlayer.CurrentPlaylist.AddFile(_AUDIO_1_PATH, false));
             Assert.AreEqual(String.Empty, _audioPlayer.CurrentPlaylist.AddFile(_AUDIO_1_PATH, true));
@@ -87,6 +91,8 @@ namespace UnitTestProject.Classes
         [TestMethod]
         public void TestPlay()
         {
+            this._audioPlayer.Playlists.Add(new Playlist("test"));
+            this._audioPlayer.SetPlaylist("test");
             AudioFile lvAf = new AudioFile(_AUDIO_1_PATH, "test", "test", "test");
             _audioPlayer.CurrentPlaylist.Songs.Add(lvAf);
             _audioPlayer.Play(lvAf);
@@ -126,6 +132,7 @@ namespace UnitTestProject.Classes
             // Default playlist = All
             lvNames[0] = "All";
             lvNames[1] = "test";
+            _audioPlayer.Playlists.Add(new Playlist("All"));
             _audioPlayer.Playlists.Add(new Playlist("test"));
             CollectionAssert.AreEqual(lvNames, _audioPlayer.GetPlaylistNames());
             _audioPlayer.Playlists.Clear();
@@ -157,6 +164,8 @@ namespace UnitTestProject.Classes
         [TestMethod]
         public void TestSavePlaylists()
         {
+            this._audioPlayer.Playlists.Add(new Playlist("test"));
+            this._audioPlayer.SetPlaylist("test");
             _audioPlayer.CurrentPlaylist.Songs.Add(new AudioFile(_AUDIO_1_PATH,"test","",""));
             try
             {
