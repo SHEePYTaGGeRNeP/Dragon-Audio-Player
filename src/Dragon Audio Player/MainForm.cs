@@ -242,11 +242,14 @@ namespace Dragon_Audio_Player
                 // TODO: Multithread this shit.
                 this.Cursor = Cursors.WaitCursor;
                 dgridSongs.Rows.Clear();
-                foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
+                if (this._audioPlayer.CurrentPlaylist != null)
                 {
-                    dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString, lvAf.TimesPlayed, lvAf.FileLocation);
+                    foreach (AudioFile lvAf in _audioPlayer.CurrentPlaylist.Songs)
+                    {
+                        dgridSongs.Rows.Add(lvAf.Title, lvAf.Artist, lvAf.Album, lvAf.Year, lvAf.DurationString,
+                            lvAf.TimesPlayed, lvAf.FileLocation);
+                    }
                 }
-
                 this.Cursor = Cursors.Default;
             }
             catch (Exception lvEx)
