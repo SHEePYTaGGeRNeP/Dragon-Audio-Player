@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Audio_Player"
         mc:Ignorable="d"
+        Closing="Window_Closing"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <ListView x:Name="lvData" Height="200">
+            <ListView.View>
+            <GridView>
+                <GridView.Columns>
+                    <GridViewColumn Header="Name" Width="50" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                    <GridViewColumn Header="Name 2" Width="50" DisplayMemberBinding="{Binding Path=Name2}"></GridViewColumn>
+                    <GridViewColumn Header="Modified Date" DisplayMemberBinding="{Binding Path=ModifiedDate}"></GridViewColumn>
+                </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
