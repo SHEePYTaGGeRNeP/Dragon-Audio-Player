@@ -5,8 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Audio_Player"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Closing="Window_Closing"
+        Loaded="Window_Loaded"
+        Title="MainWindow" Height="350" Width="700">
+    <Grid> <!--todo: add rows-->
+        <Menu VerticalAlignment="Top" Height="Auto">
+            hey
+        </Menu>
+        <TabControl Name="tabControlPlaylists" Margin="0,25,0,0" Height="250" VerticalAlignment="Top">
+            <TabItem Header="All">
+                <ListView x:Name="lvPlaylistAll" Height="200">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=Song.Title}"></GridViewColumn>
+                                <GridViewColumn Header="Artist" Width="150" DisplayMemberBinding="{Binding Path=Song.Artist}"></GridViewColumn>
+                                <GridViewColumn Header="Album" Width="150" DisplayMemberBinding="{Binding Path=Song.Album}"></GridViewColumn>
+                                <GridViewColumn Header="Duration" Width="Auto" DisplayMemberBinding="{Binding Path=Song.Duration, StringFormat=m\\:ss}"></GridViewColumn>
+                                <GridViewColumn Header="Times played" Width="Auto" DisplayMemberBinding="{Binding Path=TimesPlayed}"></GridViewColumn>
+                                <GridViewColumn Header="Location" Width="Auto" DisplayMemberBinding="{Binding Path=Song.FileLocation}"></GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="New playlist">
+                <ListView x:Name="lvPlaylistNew" Height="200">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=Song.Title}"></GridViewColumn>
+                                <GridViewColumn Header="Artist" Width="150" DisplayMemberBinding="{Binding Path=Song.Artist}"></GridViewColumn>
+                                <GridViewColumn Header="Album" Width="150" DisplayMemberBinding="{Binding Path=Song.Album}"></GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
